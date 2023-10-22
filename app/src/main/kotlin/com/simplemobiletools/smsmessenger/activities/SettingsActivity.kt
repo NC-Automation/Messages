@@ -153,10 +153,14 @@ class SettingsActivity : SimpleActivity() {
         }
     }
 
+    private fun isOrWasThankYouInstalled(): Boolean {
+        return true
+    }
+
     private fun setupCustomizeColors() = binding.apply {
-        settingsColorCustomizationLabel.text = getCustomizeColorsString()
+        settingsColorCustomizationLabel.text = "Customize colors"
         settingsColorCustomizationHolder.setOnClickListener {
-            handleCustomizeColorsClick()
+            startCustomizationActivity()
         }
     }
 
@@ -188,7 +192,7 @@ class SettingsActivity : SimpleActivity() {
     // support for device-wise blocking came on Android 7, rely only on that
     @TargetApi(Build.VERSION_CODES.N)
     private fun setupManageBlockedNumbers() = binding.apply {
-        settingsManageBlockedNumbers.text = addLockedLabelIfNeeded(com.simplemobiletools.commons.R.string.manage_blocked_numbers)
+        settingsManageBlockedNumbers.text = getString(com.simplemobiletools.commons.R.string.manage_blocked_numbers)
         settingsManageBlockedNumbersHolder.beVisibleIf(isNougatPlus())
 
         settingsManageBlockedNumbersHolder.setOnClickListener {
@@ -203,7 +207,7 @@ class SettingsActivity : SimpleActivity() {
     }
 
     private fun setupManageBlockedKeywords() = binding.apply {
-        settingsManageBlockedKeywords.text = addLockedLabelIfNeeded(R.string.manage_blocked_keywords)
+        settingsManageBlockedKeywords.text = getString(R.string.manage_blocked_keywords)
 
         settingsManageBlockedKeywordsHolder.setOnClickListener {
             if (isOrWasThankYouInstalled()) {

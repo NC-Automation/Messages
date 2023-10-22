@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.util.Size
 import android.util.TypedValue
 import android.view.Menu
@@ -305,8 +306,7 @@ class ThreadAdapter(
                         mimetype.isVCardMimeType() -> setupVCardView(holder, threadMessageAttachmentsHolder, message, attachment)
                         else -> setupFileView(holder, threadMessageAttachmentsHolder, message, attachment)
                     }
-
-                    threadMessagePlayOutline.beVisibleIf(mimetype.startsWith("video/"))
+                    //threadMessagePlayOutline.beVisibleIf(mimetype.startsWith("video/"))
                 }
             } else {
                 threadMessageAttachmentsHolder.beGone()
@@ -402,11 +402,12 @@ class ThreadAdapter(
     private fun setupImageView(holder: ViewHolder, binding: ItemMessageBinding, message: Message, attachment: Attachment) = binding.apply {
         val mimetype = attachment.mimetype
         val uri = attachment.getUri()
-
+        //val uri = Uri.parse("android.resource://your.package.name/" + R.drawable.ic_image_vector);
         val imageView = ItemAttachmentImageBinding.inflate(layoutInflater)
+        imageView.root.maxWidth = 96
+        imageView.root.maxHeight = 96
         threadMessageAttachmentsHolder.addView(imageView.root)
-
-        val placeholderDrawable = ColorDrawable(Color.TRANSPARENT)
+        val placeholderDrawable = ColorDrawable(Color.RED)
         val isTallImage = attachment.height > attachment.width
         val transformation = if (isTallImage) CenterCrop() else FitCenter()
         val options = RequestOptions()
@@ -433,6 +434,7 @@ class ThreadAdapter(
             val newHeight = wantedAttachmentSize.height / (wantedAttachmentSize.width / maxChatBubbleWidth)
             wantedAttachmentSize = Size(maxChatBubbleWidth.toInt(), newHeight.toInt())
         }
+        //wantedAttachmentSize = Size(24,24)
 
         builder = if (isTallImage) {
             builder.override(wantedAttachmentSize.width, wantedAttachmentSize.width)

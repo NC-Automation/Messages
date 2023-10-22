@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -39,6 +40,7 @@ import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.*
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -883,14 +885,16 @@ class ThreadActivity : SimpleActivity() {
 
             if (availableSIMCards.isNotEmpty()) {
                 binding.messageHolder.threadSelectSimIcon.setOnClickListener {
-                    currentSIMCardIndex = (currentSIMCardIndex + 1) % availableSIMCards.size
-                    val currentSIMCard = availableSIMCards[currentSIMCardIndex]
-                    binding.messageHolder.threadSelectSimNumber.text = currentSIMCard.id.toString()
-                    val currentSubscriptionId = currentSIMCard.subscriptionId
-                    numbers.forEach {
-                        config.saveUseSIMIdAtNumber(it, currentSubscriptionId)
-                    }
-                    toast(currentSIMCard.label)
+                    changeSimSelection(numbers)
+//                    currentSIMCardIndex = (currentSIMCardIndex + 1) % availableSIMCards.size
+//                    val currentSIMCard = availableSIMCards[currentSIMCardIndex]
+//                    binding.messageHolder.threadSelectSimNumber.text = currentSIMCard.id.toString()
+//                    ImageViewCompat.setImageTintList(binding.messageHolder.threadSelectSimIcon, ColorStateList.valueOf(Color.RED))
+//                    val currentSubscriptionId = currentSIMCard.subscriptionId
+//                    numbers.forEach {
+//                        config.saveUseSIMIdAtNumber(it, currentSubscriptionId)
+//                    }
+//                    toast(currentSIMCard.label)
                 }
             }
 
@@ -901,6 +905,24 @@ class ThreadActivity : SimpleActivity() {
                 showErrorToast(e)
             }
         }
+    }
+
+    private fun changeSimSelection(numbers: ArrayList<String>) {
+        currentSIMCardIndex = (currentSIMCardIndex + 1) % availableSIMCards.size
+        val currentSIMCard = availableSIMCards[currentSIMCardIndex]
+        when (currentSIMCard.id){
+            //orange for sim 1
+            1 -> binding.messageHolder.threadSelectSimIcon.setColorFilter(Color.argb(255, 255, 165, 0))
+            //green for sim 2
+            else-> binding.messageHolder.threadSelectSimIcon.setColorFilter(Color.argb(255, 0, 165, 0))
+        }
+        binding.messageHolder.threadSelectSimNumber.setTextColor(Color.WHITE)
+        binding.messageHolder.threadSelectSimNumber.text = currentSIMCard.id.toString()
+        val currentSubscriptionId = currentSIMCard.subscriptionId
+        numbers.forEach {
+            config.saveUseSIMIdAtNumber(it, currentSubscriptionId)
+        }
+        toast(currentSIMCard.label)
     }
 
     @SuppressLint("MissingPermission")
