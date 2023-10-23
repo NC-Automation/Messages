@@ -87,11 +87,11 @@ class NewConversationActivity : SimpleActivity() {
         binding.newConversationConfirm.applyColorFilter(getProperTextColor())
         binding.newConversationConfirm.setOnClickListener {
             val number = binding.newConversationAddress.value
-            if (isShortCodeWithLetters(number)) {
-                binding.newConversationAddress.setText("")
-                toast(R.string.invalid_short_code, length = Toast.LENGTH_LONG)
-                return@setOnClickListener
-            }
+//            if (isShortCodeWithLetters(number)) {
+//                binding.newConversationAddress.setText("")
+//                toast(R.string.invalid_short_code, length = Toast.LENGTH_LONG)
+//                return@setOnClickListener
+//            }
             launchThreadActivity(number, number)
         }
 

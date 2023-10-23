@@ -814,7 +814,7 @@ class ThreadActivity : SimpleActivity() {
                 messages.first().participants
             }
             runOnUiThread {
-                maybeDisableShortCodeReply()
+                //maybeDisableShortCodeReply()
             }
         }
     }

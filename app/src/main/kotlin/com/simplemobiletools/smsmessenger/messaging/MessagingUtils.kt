@@ -169,6 +169,12 @@ class MessagingUtils(val context: Context) {
                 context.showErrorToast(e.localizedMessage ?: context.getString(com.simplemobiletools.commons.R.string.unknown_error_occurred))
             }
         }
+        else {
+            if (message.addresses.any { it.contains("@") }){
+                //I was having a problem that messages to an email would not send if there was no attachment.
+                message.addMedia(message.text.toByteArray(), "application/txt", "text.txt", "text.txt")
+            }
+        }
 
         val mmsSentIntent = Intent(context, MmsSentReceiver::class.java)
         mmsSentIntent.putExtra(MmsSentReceiver.EXTRA_ORIGINAL_RESENT_MESSAGE_ID, messageId)

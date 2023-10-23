@@ -40,7 +40,9 @@ fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?
 
     val messagingUtils = messagingUtils
     val isMms = attachments.isNotEmpty() || isLongMmsMessage(text, settings) || addresses.size > 1 && settings.group
-    if (isMms) {
+    //we are going to send all messages with an email destination as mms.
+    val isEmailDest = addresses.any { it.contains("@") }
+    if (isMms || isEmailDest) {
         // we send all MMS attachments separately to reduces the chances of hitting provider MMS limit.
         if (attachments.isNotEmpty()) {
             val lastIndex = attachments.lastIndex

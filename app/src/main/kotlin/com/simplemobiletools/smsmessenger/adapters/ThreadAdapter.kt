@@ -485,6 +485,8 @@ class ThreadAdapter(
 
     private fun setupFileView(holder: ViewHolder, parent: LinearLayout, message: Message, attachment: Attachment) {
         val mimetype = attachment.mimetype
+        //if the attachment is a text file that we sent then don't show it.
+        if (!message.isReceivedMessage() && mimetype == "application/txt" && attachment.filename == "text.txt") return
         val uri = attachment.getUri()
         val attachmentView = ItemAttachmentDocumentBinding.inflate(layoutInflater).apply {
             setupDocumentPreview(

@@ -32,6 +32,11 @@ class SmsSender(val app: Application) {
         // (e.g. "+8211-123-4567" -> "+82111234567")
         dest = PhoneNumberUtils.stripSeparators(dest)
 
+        //added this code to allow sending to email addresses
+        if (dest.isEmpty() && !destination.isEmpty()){
+            dest = destination
+        }
+
         if (dest.isEmpty()) {
             throw SmsException(EMPTY_DESTINATION_ADDRESS)
         }
