@@ -12,36 +12,36 @@
         android:id="@+id/dial_number"
         android:icon="@drawable/ic_phone_vector"
         android:title="@string/dial_number"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/manage_people"
         android:icon="@drawable/ic_add_person_vector"
         android:title="@string/add_person"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/rename_conversation"
-        android:icon="@drawable/ic_edit_vector"
-        android:title="@string/rename_conversation"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/archive"
         android:icon="@drawable/ic_archive_vector"
         android:title="@string/archive"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/unarchive"
         android:icon="@drawable/ic_unarchive_vector"
         android:title="@string/unarchive"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/conversation_details"
         android:icon="@drawable/ic_info_vector"
         android:title="@string/conversation_details"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/rename_conversation"
+        android:icon="@drawable/ic_edit_vector"
+        android:title="@string/rename_conversation"
+        app:showAsAction="never" />
     <item
         android:id="@+id/add_number_to_contact"
         android:title="@string/add_number_to_contact"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/block_number"
         android:showAsAction="never"

@@ -1,10 +1,14 @@
 package com.simplemobiletools.smsmessenger.adapters
 
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Parcelable
+import android.text.format.DateFormat
+import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,6 +22,8 @@ import com.simplemobiletools.smsmessenger.activities.SimpleActivity
 import com.simplemobiletools.smsmessenger.databinding.ItemConversationBinding
 import com.simplemobiletools.smsmessenger.extensions.*
 import com.simplemobiletools.smsmessenger.models.Conversation
+import java.util.Calendar
+import java.util.Locale
 
 @Suppress("LeakingThis")
 abstract class BaseConversationsAdapter(
@@ -138,12 +144,15 @@ abstract class BaseConversationsAdapter(
             }
 
             val style = if (conversation.read) {
-                conversationBodyShort.alpha = 0.7f
+                conversationBodyShort.alpha = 0.4f
+                conversationNewIndicatorL.beGone()
                 if (conversation.isScheduled) Typeface.ITALIC else Typeface.NORMAL
             } else {
-                conversationBodyShort.alpha = 1f
-                if (conversation.isScheduled) Typeface.BOLD_ITALIC else Typeface.BOLD
-
+                conversationBodyShort.alpha = 0.6f
+                conversationNewIndicatorL.isVisible = true
+                conversationNewCount.text = "!"
+                if (conversation.isScheduled) Typeface.ITALIC else Typeface.NORMAL
+                //if (conversation.isScheduled) Typeface.BOLD_ITALIC else Typeface.BOLD
             }
             conversationAddress.setTypeface(null, style)
             conversationBodyShort.setTypeface(null, style)
@@ -160,6 +169,26 @@ abstract class BaseConversationsAdapter(
             }
 
             SimpleContactsHelper(activity).loadContactImage(conversation.photoUri, conversationImage, conversation.title, placeholder)
+        }
+    }
+
+    fun Int.formatDateOrTime(context: Context, hideTimeAtOtherDays: Boolean, showYearEvenIfCurrent: Boolean): String {
+        val cal = Calendar.getInstance(Locale.ENGLISH)
+        cal.timeInMillis = this * 1000L
+
+        return if (DateUtils.isToday(this * 1000L)) {
+            DateFormat.format("h:mm a", cal).toString()
+        } else {
+            var format = "MMM d yyyy"  //context.baseConfig.dateFormat
+            if (!showYearEvenIfCurrent && isThisYear()) {
+                format = "MMM d" // format.replace("y", "").trim().trim('-').trim('.').trim('/')
+            }
+
+            if (!hideTimeAtOtherDays) {
+                format += ", h:mm a"
+            }
+
+            DateFormat.format(format, cal).toString()
         }
     }
 

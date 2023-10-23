@@ -5,7 +5,7 @@
     <corners
         android:bottomLeftRadius="@dimen/big_margin"
         android:bottomRightRadius="@dimen/big_margin"
-        android:topLeftRadius="@dimen/small_margin"
+        android:topLeftRadius="@dimen/big_margin"
         android:topRightRadius="@dimen/big_margin" />
 
     <solid android:color="@color/activated_item_foreground" />

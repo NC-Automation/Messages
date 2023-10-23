@@ -259,7 +259,7 @@ class ThreadActivity : SimpleActivity() {
             findItem(R.id.unarchive).isVisible = threadItems.isNotEmpty() && conversation?.isArchived == true && !isRecycleBin && archiveAvailable
             findItem(R.id.rename_conversation).isVisible = participants.size > 1 && conversation != null && !isRecycleBin
             findItem(R.id.conversation_details).isVisible = conversation != null && !isRecycleBin
-            findItem(R.id.block_number).title = addLockedLabelIfNeeded(com.simplemobiletools.commons.R.string.block_number)
+            findItem(R.id.block_number).title = getString(com.simplemobiletools.commons.R.string.block_number)
             findItem(R.id.block_number).isVisible = isNougatPlus() && !isRecycleBin
             findItem(R.id.dial_number).isVisible = participants.size == 1 && !isSpecialNumber() && !isRecycleBin
             findItem(R.id.manage_people).isVisible = !isSpecialNumber() && !isRecycleBin
@@ -948,11 +948,11 @@ class ThreadActivity : SimpleActivity() {
     }
 
     private fun tryBlocking() {
-        if (isOrWasThankYouInstalled()) {
+        //if (isOrWasThankYouInstalled()) {
             blockNumber()
-        } else {
-            FeatureLockedDialog(this) { }
-        }
+        //} else {
+        //    FeatureLockedDialog(this) { }
+        //}
     }
 
     private fun blockNumber() {
