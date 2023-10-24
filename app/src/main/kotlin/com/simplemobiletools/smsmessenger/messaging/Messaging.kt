@@ -22,6 +22,7 @@ fun Context.getSendMessageSettings(): Settings {
     settings.sendLongAsMms = config.sendLongMessageMMS
     settings.sendLongAsMmsAfter = 1
     settings.group = config.sendGroupMessageMMS
+    if (config.useSignature) settings.signature = config.messageSignature
     return settings
 }
 
@@ -34,12 +35,15 @@ fun Context.isLongMmsMessage(text: String, settings: Settings = getSendMessageSe
 /** Sends the message using the in-app SmsManager API wrappers if it's an SMS or using android-smsmms for MMS. */
 fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?, attachments: List<Attachment>, messageId: Long? = null) {
     val settings = getSendMessageSettings()
+
     if (subId != null) {
         settings.subscriptionId = subId
     }
+    var textWithSignature = text
+    if (!settings.signature.isNullOrEmpty()) textWithSignature = text + "\n" + settings.signature
 
     val messagingUtils = messagingUtils
-    val isMms = attachments.isNotEmpty() || isLongMmsMessage(text, settings) || addresses.size > 1 && settings.group
+    val isMms = attachments.isNotEmpty() || isLongMmsMessage(textWithSignature, settings) || addresses.size > 1 && settings.group
     //we are going to send all messages with an email destination as mms.
     val isEmailDest = addresses.any { it.contains("@") }
     if (isMms || isEmailDest) {
@@ -54,13 +58,14 @@ fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?
             }
 
             val lastAttachment = attachments[lastIndex]
-            messagingUtils.sendMmsMessage(text, addresses, lastAttachment, settings, messageId)
+            messagingUtils.sendMmsMessage(textWithSignature, addresses, lastAttachment, settings, messageId)
         } else {
-            messagingUtils.sendMmsMessage(text, addresses, null, settings, messageId)
+            messagingUtils.sendMmsMessage(textWithSignature, addresses, null, settings, messageId)
         }
     } else {
         try {
-            messagingUtils.sendSmsMessage(text, addresses.toSet(), settings.subscriptionId, settings.deliveryReports, messageId)
+
+            messagingUtils.sendSmsMessage(textWithSignature, addresses.toSet(), settings.subscriptionId, settings.deliveryReports, messageId)
         } catch (e: SmsException) {
             when (e.errorCode) {
                 EMPTY_DESTINATION_ADDRESS -> toast(id = R.string.empty_destination_address, length = LENGTH_LONG)

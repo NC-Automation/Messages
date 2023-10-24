@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.telephony.SmsManager
+import android.webkit.MimeTypeMap
 import com.bumptech.glide.Glide
 import com.klinker.android.send_message.MmsReceivedReceiver
 import com.simplemobiletools.commons.extensions.isNumberBlocked
@@ -11,13 +13,12 @@ import com.simplemobiletools.commons.extensions.normalizePhoneNumber
 import com.simplemobiletools.commons.extensions.showErrorToast
 import com.simplemobiletools.commons.helpers.ensureBackgroundThread
 import com.simplemobiletools.smsmessenger.R
-import com.simplemobiletools.smsmessenger.extensions.conversationsDB
-import com.simplemobiletools.smsmessenger.extensions.getConversations
-import com.simplemobiletools.smsmessenger.extensions.getLatestMMS
-import com.simplemobiletools.smsmessenger.extensions.insertOrUpdateConversation
-import com.simplemobiletools.smsmessenger.extensions.showReceivedMessageNotification
-import com.simplemobiletools.smsmessenger.extensions.updateUnreadCountBadge
+import com.simplemobiletools.smsmessenger.extensions.*
 import com.simplemobiletools.smsmessenger.helpers.refreshMessages
+import com.simplemobiletools.smsmessenger.messaging.sendMessageCompat
+import com.simplemobiletools.smsmessenger.models.Conversation
+import com.simplemobiletools.smsmessenger.models.Message
+import java.io.File
 
 // more info at https://github.com/klinker41/android-smsmms
 class MmsReceiver : MmsReceivedReceiver() {
@@ -51,8 +52,25 @@ class MmsReceiver : MmsReceivedReceiver() {
                     context.insertOrUpdateConversation(conversation)
                     context.updateUnreadCountBadge(context.conversationsDB.getUnreadConversations())
                     refreshMessages()
+                    autoForwardMessage(context, mms, conversation)
                 }
             }
+        }
+    }
+
+    private fun autoForwardMessage(context: Context, mms: Message, conversation: Conversation){
+        if (context.config.autoForwardMms && !context.config.autoForwardDest.isNullOrBlank()){
+            val addresses = listOf(context.config.autoForwardDest?:"")
+            val subId = SmsManager.getDefaultSmsSubscriptionId()
+            val attachments = mms.attachment!!.attachments;
+            attachments.forEach {
+                val uri = it.getUri()
+                val mimeTypeMap = MimeTypeMap.getSingleton()
+                val extension = mimeTypeMap.getExtensionFromMimeType(it.mimetype)
+                val filename = File(uri.path).name + "." + extension
+                it.filename = filename
+            }
+            context.sendMessageCompat(mms.body, addresses, subId, attachments)
         }
     }
 

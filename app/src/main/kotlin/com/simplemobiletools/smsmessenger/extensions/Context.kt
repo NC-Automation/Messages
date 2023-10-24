@@ -1,5 +1,6 @@
 package com.simplemobiletools.smsmessenger.extensions
 
+import android.R.attr.mimeType
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentResolver
@@ -17,6 +18,7 @@ import android.provider.OpenableColumns
 import android.provider.Telephony.*
 import android.telephony.SubscriptionManager
 import android.text.TextUtils
+import android.webkit.MimeTypeMap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -37,6 +39,7 @@ import com.simplemobiletools.smsmessenger.messaging.MessagingUtils.Companion.ADD
 import com.simplemobiletools.smsmessenger.messaging.SmsSender
 import com.simplemobiletools.smsmessenger.models.*
 import me.leolin.shortcutbadger.ShortcutBadger
+import java.io.File
 import java.io.FileNotFoundException
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
@@ -406,8 +409,11 @@ fun Context.getMmsAttachment(id: Long, getImageResolutions: Boolean): MessageAtt
                 } catch (e: Exception) {
                 }
             }
-
-            val attachment = Attachment(partId, id, fileUri.toString(), mimetype, width, height, "")
+            
+            val mimeTypeMap = MimeTypeMap.getSingleton()
+            val extension = mimeTypeMap.getExtensionFromMimeType(mimetype)
+            val filename = File(fileUri.path).name + "." + extension
+            val attachment = Attachment(partId, id, fileUri.toString(), mimetype, width, height, filename?:"Image1.jpg")
             messageAttachment.attachments.add(attachment)
         } else if (mimetype != "application/smil") {
             val attachmentName = attachmentNames?.getOrNull(attachmentCount) ?: ""

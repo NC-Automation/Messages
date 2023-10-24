@@ -185,6 +185,53 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/settings_auto_forward_mms_holder"
+                style="@style/SettingsHolderCheckboxStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.simplemobiletools.commons.views.MyAppCompatCheckbox
+                    android:id="@+id/settings_auto_forward_mms"
+                    style="@style/SettingsCheckboxStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/auto_forward_mms" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/settings_auto_forward_mms_dest"
+                    android:layout_width="match_parent"
+                    android:layout_below="@id/settings_auto_forward_mms"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="-10dp"
+                    android:visibility="gone"
+                    android:maxLines="1"
+                    tools:visibility="visible"
+                    tools:text="email@sample.com"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/settings_use_signature_holder"
+                style="@style/SettingsHolderCheckboxStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.simplemobiletools.commons.views.MyAppCompatCheckbox
+                    android:id="@+id/settings_use_signature"
+                    style="@style/SettingsCheckboxStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/use_signature" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/settings_message_signature"
+                    android:layout_width="match_parent"
+                    android:layout_below="@id/settings_use_signature"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-10dp"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="Thanks,\nName"/>
+            </RelativeLayout>
+
             <include
                 android:id="@+id/settings_general_settings_divider"
                 layout="@layout/divider" />

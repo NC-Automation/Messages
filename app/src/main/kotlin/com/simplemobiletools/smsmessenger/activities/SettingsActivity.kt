@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.text.set
 import com.simplemobiletools.commons.activities.ManageBlockedNumbersActivity
 import com.simplemobiletools.commons.dialogs.*
 import com.simplemobiletools.commons.extensions.*
@@ -59,6 +61,8 @@ class SettingsActivity : SimpleActivity() {
         setupManageBlockedKeywords()
         setupChangeDateTimeFormat()
         setupFontSize()
+        setupAutoForwardMms()
+        setupUseSignature()
         setupShowCharacterCounter()
         setupUseSimpleCharacters()
         setupSendOnEnter()
@@ -250,6 +254,34 @@ class SettingsActivity : SimpleActivity() {
         settingsShowCharacterCounterHolder.setOnClickListener {
             settingsShowCharacterCounter.toggle()
             config.showCharacterCounter = settingsShowCharacterCounter.isChecked
+        }
+    }
+
+    private fun setupAutoForwardMms() = binding.apply {
+        settingsAutoForwardMms.isChecked = config.autoForwardMms
+        settingsAutoForwardMmsDest.beGoneIf(!config.autoForwardMms)
+        settingsAutoForwardMmsDest.setText(config.autoForwardDest)
+        settingsAutoForwardMmsHolder.setOnClickListener {
+            settingsAutoForwardMms.toggle()
+            config.autoForwardMms = settingsAutoForwardMms.isChecked
+            settingsAutoForwardMmsDest.beGoneIf(!config.autoForwardMms)
+        }
+        settingsAutoForwardMmsDest.onTextChangeListener {
+            config.autoForwardDest = settingsAutoForwardMmsDest.text.toString()
+        }
+    }
+
+    private fun setupUseSignature() = binding.apply {
+        settingsUseSignature.isChecked = config.useSignature
+        settingsMessageSignature.beGoneIf(!config.useSignature)
+        settingsMessageSignature.setText(config.messageSignature)
+        settingsUseSignatureHolder.setOnClickListener {
+            settingsUseSignature.toggle()
+            config.useSignature = settingsUseSignature.isChecked
+            settingsMessageSignature.beGoneIf(!config.useSignature)
+        }
+        settingsMessageSignature.onTextChangeListener {
+            config.messageSignature = settingsMessageSignature.text.toString()
         }
     }
 

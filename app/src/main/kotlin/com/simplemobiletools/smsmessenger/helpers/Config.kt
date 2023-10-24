@@ -20,6 +20,22 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getBoolean(SHOW_CHARACTER_COUNTER, false)
         set(showCharacterCounter) = prefs.edit().putBoolean(SHOW_CHARACTER_COUNTER, showCharacterCounter).apply()
 
+    var autoForwardMms: Boolean
+        get() = prefs.getBoolean(AUTO_FORWARD_MMS, false)
+        set(autoForwardMms) = prefs.edit().putBoolean(AUTO_FORWARD_MMS, autoForwardMms).apply()
+
+    var autoForwardDest: String?
+        get() = prefs.getString(AUTO_FORWARD_DEST, "")
+        set(autoForwardDest) = prefs.edit().putString(AUTO_FORWARD_DEST, autoForwardDest).apply()
+
+    var useSignature: Boolean
+        get() = prefs.getBoolean(USE_SIGNATURE, false)
+        set(useSignature) = prefs.edit().putBoolean(USE_SIGNATURE, useSignature).apply()
+
+    var messageSignature: String?
+        get() = prefs.getString(MESSAGE_SIGNATURE, "")
+        set(messageSignature) = prefs.edit().putString(MESSAGE_SIGNATURE, messageSignature).apply()
+
     var useSimpleCharacters: Boolean
         get() = prefs.getBoolean(USE_SIMPLE_CHARACTERS, false)
         set(useSimpleCharacters) = prefs.edit().putBoolean(USE_SIMPLE_CHARACTERS, useSimpleCharacters).apply()
