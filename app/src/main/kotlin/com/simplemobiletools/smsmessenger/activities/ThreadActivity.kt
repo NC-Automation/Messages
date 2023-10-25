@@ -21,6 +21,7 @@ import android.telephony.SmsManager
 import android.telephony.SmsMessage
 import android.telephony.SubscriptionInfo
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.text.format.DateUtils
 import android.text.format.DateUtils.FORMAT_NO_YEAR
 import android.text.format.DateUtils.FORMAT_SHOW_DATE
@@ -40,13 +41,11 @@ import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.*
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.dialogs.FeatureLockedDialog
 import com.simplemobiletools.commons.dialogs.PermissionRequiredDialog
 import com.simplemobiletools.commons.dialogs.RadioGroupDialog
 import com.simplemobiletools.commons.extensions.*
@@ -61,6 +60,7 @@ import com.simplemobiletools.smsmessenger.adapters.AttachmentsAdapter
 import com.simplemobiletools.smsmessenger.adapters.AutoCompleteTextViewAdapter
 import com.simplemobiletools.smsmessenger.adapters.ThreadAdapter
 import com.simplemobiletools.smsmessenger.databinding.ActivityThreadBinding
+import com.simplemobiletools.smsmessenger.databinding.ItemMessageBinding
 import com.simplemobiletools.smsmessenger.databinding.ItemSelectedContactBinding
 import com.simplemobiletools.smsmessenger.dialogs.InvalidNumberDialog
 import com.simplemobiletools.smsmessenger.dialogs.RenameConversationDialog
@@ -77,6 +77,9 @@ import org.joda.time.DateTime
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.Calendar
+import java.util.Locale
+import kotlin.time.Duration.Companion.days
 
 class ThreadActivity : SimpleActivity() {
     private val MIN_DATE_TIME_DIFF_SECS = 300
@@ -88,7 +91,7 @@ class ThreadActivity : SimpleActivity() {
     private val SCROLL_TO_BOTTOM_FAB_LIMIT = 20
 
     private var threadId = 0L
-    private var currentSIMCardIndex = 0
+    var currentSIMCardIndex = 0
     private var isActivityVisible = false
     private var refreshedSinceSent = false
     private var threadItems = ArrayList<ThreadItem>()
@@ -97,7 +100,7 @@ class ThreadActivity : SimpleActivity() {
     private var participants = ArrayList<SimpleContact>()
     private var privateContacts = ArrayList<SimpleContact>()
     private var messages = ArrayList<Message>()
-    private val availableSIMCards = ArrayList<SIMCard>()
+    val availableSIMCards = ArrayList<SIMCard>()
     private var lastAttachmentUri: String? = null
     private var capturedImageUri: Uri? = null
     private var loadingOlderMessages = false
@@ -855,6 +858,24 @@ class ThreadActivity : SimpleActivity() {
     }
 
     @SuppressLint("MissingPermission")
+    fun getAvailableSIMs() : List<SIMCard> {
+        if (availableSIMCards.size > 0) return  availableSIMCards
+        val availableSIMs = subscriptionManagerCompat().activeSubscriptionInfoList ?: return ArrayList<SIMCard>()
+        var sims = ArrayList<SIMCard>()
+        if (availableSIMs.size > 0) {
+            availableSIMs.forEachIndexed { index, subscriptionInfo ->
+                var label = subscriptionInfo.displayName?.toString() ?: ""
+                if (subscriptionInfo.number?.isNotEmpty() == true) {
+                    label += " (${subscriptionInfo.number})"
+                }
+                val simCard = SIMCard(index + 1, subscriptionInfo.subscriptionId, label)
+                sims.add(simCard)
+            }
+        }
+        return sims
+    }
+
+    @SuppressLint("MissingPermission")
     private fun setupSIMSelector() {
         val availableSIMs = subscriptionManagerCompat().activeSubscriptionInfoList ?: return
         if (availableSIMs.size > 1) {
@@ -886,43 +907,64 @@ class ThreadActivity : SimpleActivity() {
             if (availableSIMCards.isNotEmpty()) {
                 binding.messageHolder.threadSelectSimIcon.setOnClickListener {
                     changeSimSelection(numbers)
-//                    currentSIMCardIndex = (currentSIMCardIndex + 1) % availableSIMCards.size
-//                    val currentSIMCard = availableSIMCards[currentSIMCardIndex]
-//                    binding.messageHolder.threadSelectSimNumber.text = currentSIMCard.id.toString()
-//                    ImageViewCompat.setImageTintList(binding.messageHolder.threadSelectSimIcon, ColorStateList.valueOf(Color.RED))
-//                    val currentSubscriptionId = currentSIMCard.subscriptionId
-//                    numbers.forEach {
-//                        config.saveUseSIMIdAtNumber(it, currentSubscriptionId)
-//                    }
-//                    toast(currentSIMCard.label)
                 }
             }
 
-            binding.messageHolder.threadSelectSimNumber.setTextColor(getProperTextColor().getContrastColor())
             try {
+                val currentSIMCard = availableSIMCards[currentSIMCardIndex]
+                binding.messageHolder.threadSelectSimIcon.setColorFilter(getSimColor(currentSIMCard.id))
+                binding.messageHolder.threadSelectSimNumber.setTextColor(Color.WHITE)
                 binding.messageHolder.threadSelectSimNumber.text = (availableSIMCards[currentSIMCardIndex].id).toString()
+                setThreadSims()
             } catch (e: Exception) {
                 showErrorToast(e)
             }
         }
     }
 
+    fun getSelectedSimId() :String {
+        return binding.messageHolder.threadSelectSimNumber.text.toString()
+    }
+
     private fun changeSimSelection(numbers: ArrayList<String>) {
         currentSIMCardIndex = (currentSIMCardIndex + 1) % availableSIMCards.size
         val currentSIMCard = availableSIMCards[currentSIMCardIndex]
-        when (currentSIMCard.id){
-            //orange for sim 1
-            1 -> binding.messageHolder.threadSelectSimIcon.setColorFilter(Color.argb(255, 255, 165, 0))
-            //green for sim 2
-            else-> binding.messageHolder.threadSelectSimIcon.setColorFilter(Color.argb(255, 0, 165, 0))
-        }
+        binding.messageHolder.threadSelectSimIcon.setColorFilter(getSimColor(currentSIMCard.id))
         binding.messageHolder.threadSelectSimNumber.setTextColor(Color.WHITE)
         binding.messageHolder.threadSelectSimNumber.text = currentSIMCard.id.toString()
         val currentSubscriptionId = currentSIMCard.subscriptionId
+        setThreadSims()
         numbers.forEach {
             config.saveUseSIMIdAtNumber(it, currentSubscriptionId)
         }
         toast(currentSIMCard.label)
+    }
+
+    private fun setThreadSims() {
+        val currentSIMCard = availableSIMCards[currentSIMCardIndex]
+        val sim = currentSIMCard.id.toString()
+        getOrCreateThreadAdapter().apply {
+            recyclerView.allViews.forEach {
+                try{
+                ItemMessageBinding.bind(it).apply {
+                    threadMessageSimIcon.beGoneIf(threadMessageSimNumber.text == sim)
+                    threadMessageSimNumber.beGoneIf(threadMessageSimNumber.text == sim)
+                }
+                } catch (e:Exception){
+                    val a = e
+                }
+            }
+        }
+    }
+    fun getSimColor(id:Int) : Int {
+        return when (id) {
+            //orange for sim 1
+            1 -> Color.argb(255, 255, 165, 0)
+            //green for sim 2
+            2 -> Color.argb(255, 0, 165, 0)
+            //blue for others
+            else -> Color.argb(255, 0, 0, 165)
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -1112,6 +1154,12 @@ class ThreadActivity : SimpleActivity() {
         }
     }
 
+    fun Int.formatDateOrTime(format: String): String {
+        val cal = Calendar.getInstance(Locale.ENGLISH)
+        cal.timeInMillis = this * 1000L
+        return DateFormat.format(format, cal).toString()
+    }
+
     @SuppressLint("MissingPermission")
     private fun getThreadItems(): ArrayList<ThreadItem> {
         val items = ArrayList<ThreadItem>()
@@ -1136,7 +1184,10 @@ class ThreadActivity : SimpleActivity() {
             // do not show the date/time above every message, only if the difference between the 2 messages is at least MIN_DATE_TIME_DIFF_SECS,
             // or if the message is sent from a different SIM
             val isSentFromDifferentKnownSIM = prevSIMId != -1 && message.subscriptionId != -1 && prevSIMId != message.subscriptionId
-            if (message.date - prevDateTime > MIN_DATE_TIME_DIFF_SECS || isSentFromDifferentKnownSIM) {
+            var msgDate = message.date.formatDateOrTime("MM/dd/yyyy")
+            var preDate = prevDateTime.formatDateOrTime("MM/dd/yyyy")
+            var differentDay = msgDate != preDate
+            if (differentDay) { // message.date - prevDateTime > MIN_DATE_TIME_DIFF_SECS || isSentFromDifferentKnownSIM) {
                 val simCardID = subscriptionIdToSimId[message.subscriptionId] ?: "?"
                 items.add(ThreadDateTime(message.date, simCardID))
                 prevDateTime = message.date

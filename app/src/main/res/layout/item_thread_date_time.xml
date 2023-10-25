@@ -21,6 +21,7 @@
         android:layout_alignTop="@+id/thread_date_time"
         android:layout_alignBottom="@id/thread_date_time"
         android:layout_marginEnd="@dimen/small_margin"
+        android:visibility="gone"
         android:layout_toStartOf="@id/thread_date_time"
         android:src="@drawable/ic_sim_vector" />
 
@@ -34,6 +35,7 @@
         android:layout_alignBottom="@+id/thread_sim_icon"
         android:gravity="center"
         android:textColor="@color/md_grey_black"
+        android:visibility="gone"
         android:textSize="@dimen/smaller_text_size"
         tools:text="1" />
 

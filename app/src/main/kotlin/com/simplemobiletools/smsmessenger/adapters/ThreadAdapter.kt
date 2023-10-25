@@ -1,21 +1,23 @@
 package com.simplemobiletools.smsmessenger.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
+import android.text.format.DateFormat
+import android.text.format.DateUtils
 import android.util.Size
 import android.util.TypedValue
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
@@ -48,8 +50,11 @@ import com.simplemobiletools.smsmessenger.extensions.*
 import com.simplemobiletools.smsmessenger.helpers.*
 import com.simplemobiletools.smsmessenger.models.Attachment
 import com.simplemobiletools.smsmessenger.models.Message
+import com.simplemobiletools.smsmessenger.models.SIMCard
 import com.simplemobiletools.smsmessenger.models.ThreadItem
 import com.simplemobiletools.smsmessenger.models.ThreadItem.*
+import java.util.Calendar
+import java.util.Locale
 
 class ThreadAdapter(
     activity: SimpleActivity,
@@ -333,7 +338,22 @@ class ThreadAdapter(
                     }
                 }
             }
+            threadMessageSenderPhoto.beGone()
+            threadMessageSenderName.beGoneIf(message.participants.count() == 1)
+            threadMessageSenderName.text = message.senderName
+            threadMessageMms.beGoneIf(!message.isMMS)
 
+            try {
+                var sims = (activity as ThreadActivity).getAvailableSIMs()
+                var sim = sims.firstOrNull() { it.subscriptionId == message.subscriptionId}
+                threadMessageSimNumber.text = (sim?.id?:9).toString()
+                var color = (activity as ThreadActivity).getSimColor(threadMessageSimNumber.text.toInt())
+                threadMessageSimIcon.setColorFilter(color)
+            } catch (e:Exception) {}
+
+            val cal = Calendar.getInstance(Locale.ENGLISH)
+            cal.timeInMillis = message.date * 1000L
+            threadMessageTime.text = DateFormat.format("h:mm a", cal).toString()
             threadMessageBody.apply {
                 background = AppCompatResources.getDrawable(activity, R.drawable.item_received_background)
                 setTextColor(textColor)
@@ -359,6 +379,32 @@ class ThreadAdapter(
         }
     }
 
+    fun Int.formatTime(context: Context, hideTimeAtOtherDays: Boolean, showYearEvenIfCurrent: Boolean): String {
+        val cal = Calendar.getInstance(Locale.ENGLISH)
+        cal.timeInMillis = this * 1000L
+
+        return if (DateUtils.isToday(this * 1000L)) {
+            DateFormat.format("h:mm a", cal).toString()
+        } else {
+            var format = "MMM d yyyy"  //context.baseConfig.dateFormat
+            if (!showYearEvenIfCurrent && isThisYear()) {
+                format = "MMM d" // format.replace("y", "").trim().trim('-').trim('.').trim('/')
+            }
+
+            if (!hideTimeAtOtherDays) {
+                format += ", h:mm a"
+            }
+
+            DateFormat.format(format, cal).toString()
+        }
+    }
+
+    fun Int.formatDateOrTime(format: String): String {
+        val cal = Calendar.getInstance(Locale.ENGLISH)
+        cal.timeInMillis = this * 1000L
+        return DateFormat.format(format, cal).toString()
+    }
+
     private fun setupSentMessageView(messageBinding: ItemMessageBinding, message: Message) {
         messageBinding.apply {
             with(ConstraintSet()) {
@@ -371,12 +417,27 @@ class ThreadAdapter(
             val primaryColor = activity.getProperPrimaryColor()
             val contrastColor = primaryColor.getContrastColor()
 
-            threadMessageBody.apply {
-                updateLayoutParams<RelativeLayout.LayoutParams> {
-                    removeRule(RelativeLayout.END_OF)
-                    addRule(RelativeLayout.ALIGN_PARENT_END)
-                }
+            threadMessageWrapper.rotationY = 180f
+            threadMessageBody.rotationY = 180f
+            threadMessageTimeHolder.rotationY = 180f
+            threadMessageSenderPhoto.beGone()
+            threadMessageSenderName.beGone()
+            threadMessageMms.beGoneIf(!message.isMMS)
+            try {
+                var sims = (activity as ThreadActivity).getAvailableSIMs()
+                var sim = sims.firstOrNull() { it.subscriptionId == message.subscriptionId}
+                threadMessageSimNumber.text = (sim?.id?:9).toString()
+                var color = (activity as ThreadActivity).getSimColor(threadMessageSimNumber.text.toInt())
+                threadMessageSimIcon.setColorFilter(color)
+            } catch (e:Exception) {}
 
+            val cal = Calendar.getInstance(Locale.ENGLISH)
+            cal.timeInMillis = message.date * 1000L
+            threadMessageTime.text = DateFormat.format("h:mm a", cal).toString()
+
+
+
+            threadMessageBody.apply {
                 background = AppCompatResources.getDrawable(activity, R.drawable.item_sent_background)
                 background.applyColorFilter(primaryColor)
                 setTextColor(contrastColor)
@@ -510,18 +571,12 @@ class ThreadAdapter(
     private fun setupDateTime(view: View, dateTime: ThreadDateTime) {
         ItemThreadDateTimeBinding.bind(view).apply {
             threadDateTime.apply {
-                text = dateTime.date.formatDateOrTime(context, hideTimeAtOtherDays = false, showYearEvenIfCurrent = false)
+                var format = "EEEE, MMMM d"
+                if (!dateTime.date.isThisYear()) format += ", yyyy"
+                text = dateTime.date.formatDateOrTime(format)
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize)
             }
             threadDateTime.setTextColor(textColor)
-
-            threadSimIcon.beVisibleIf(hasMultipleSIMCards)
-            threadSimNumber.beVisibleIf(hasMultipleSIMCards)
-            if (hasMultipleSIMCards) {
-                threadSimNumber.text = dateTime.simID
-                threadSimNumber.setTextColor(textColor.getContrastColor())
-                threadSimIcon.applyColorFilter(textColor)
-            }
         }
     }
 

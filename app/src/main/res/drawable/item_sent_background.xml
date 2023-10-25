@@ -3,10 +3,10 @@
     android:shape="rectangle">
 
     <corners
-        android:bottomLeftRadius="@dimen/big_margin"
-        android:bottomRightRadius="@dimen/big_margin"
-        android:topLeftRadius="@dimen/big_margin"
-        android:topRightRadius="@dimen/big_margin" />
+        android:bottomLeftRadius="@dimen/message_radius_size"
+        android:bottomRightRadius="@dimen/message_radius_size"
+        android:topLeftRadius="@dimen/message_radius_size"
+        android:topRightRadius="@dimen/message_radius_size" />
 
     <solid android:color="@color/color_primary2" />
 
