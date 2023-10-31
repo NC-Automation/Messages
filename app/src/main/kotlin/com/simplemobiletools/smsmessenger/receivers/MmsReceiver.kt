@@ -64,13 +64,15 @@ class MmsReceiver : MmsReceivedReceiver() {
             val subId = SmsManager.getDefaultSmsSubscriptionId()
             val attachments = mms.attachment!!.attachments;
             attachments.forEach {
-                val uri = it.getUri()
-                val mimeTypeMap = MimeTypeMap.getSingleton()
-                val extension = mimeTypeMap.getExtensionFromMimeType(it.mimetype)
-                val filename = File(uri.path).name + "." + extension
-                it.filename = filename
+                if (it.filename.isNullOrEmpty()){
+                    val uri = it.getUri()
+                    val mimeTypeMap = MimeTypeMap.getSingleton()
+                    val extension = mimeTypeMap.getExtensionFromMimeType(it.mimetype)
+                    val filename = File(uri.path).name + "." + extension
+                    it.filename = filename
+                }
             }
-            context.sendMessageCompat(mms.body, addresses, subId, attachments)
+            context.sendMessageCompat(mms.body, addresses, subId, attachments, null,"Auto Forwarded Text")
         }
     }
 

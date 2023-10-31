@@ -13,6 +13,7 @@ import com.simplemobiletools.smsmessenger.messaging.SmsException.Companion.EMPTY
 import com.simplemobiletools.smsmessenger.messaging.SmsException.Companion.ERROR_PERSISTING_MESSAGE
 import com.simplemobiletools.smsmessenger.messaging.SmsException.Companion.ERROR_SENDING_MESSAGE
 import com.simplemobiletools.smsmessenger.models.Attachment
+import javax.security.auth.Subject
 
 @Deprecated("TODO: Move/rewrite messaging config code into the app.")
 fun Context.getSendMessageSettings(): Settings {
@@ -33,7 +34,7 @@ fun Context.isLongMmsMessage(text: String, settings: Settings = getSendMessageSe
 }
 
 /** Sends the message using the in-app SmsManager API wrappers if it's an SMS or using android-smsmms for MMS. */
-fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?, attachments: List<Attachment>, messageId: Long? = null) {
+fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?, attachments: List<Attachment>, messageId: Long? = null, subject: String? = null) {
     val settings = getSendMessageSettings()
 
     if (subId != null) {
@@ -58,9 +59,9 @@ fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?
             }
 
             val lastAttachment = attachments[lastIndex]
-            messagingUtils.sendMmsMessage(textWithSignature, addresses, lastAttachment, settings, messageId)
+            messagingUtils.sendMmsMessage(textWithSignature, addresses, lastAttachment, settings, messageId, subject)
         } else {
-            messagingUtils.sendMmsMessage(textWithSignature, addresses, null, settings, messageId)
+            messagingUtils.sendMmsMessage(textWithSignature, addresses, null, settings, messageId, subject)
         }
     } else {
         try {

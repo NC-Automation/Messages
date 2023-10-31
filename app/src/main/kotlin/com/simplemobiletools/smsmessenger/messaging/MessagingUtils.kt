@@ -146,10 +146,10 @@ class MessagingUtils(val context: Context) {
     }
 
     @Deprecated("TODO: Move/rewrite MMS code into the app.")
-    fun sendMmsMessage(text: String, addresses: List<String>, attachment: Attachment?, settings: Settings, messageId: Long? = null) {
+    fun sendMmsMessage(text: String, addresses: List<String>, attachment: Attachment?, settings: Settings, messageId: Long? = null, subject: String? = null) {
         val transaction = Transaction(context, settings)
         val message = Message(text, addresses.toTypedArray())
-
+        message.subject = subject
         if (attachment != null) {
             try {
                 val uri = attachment.getUri()
