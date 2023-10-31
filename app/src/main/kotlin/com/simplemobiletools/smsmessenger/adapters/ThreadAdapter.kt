@@ -467,6 +467,9 @@ class ThreadAdapter(
 //        imageView.root.maxWidth = 96
 //        imageView.root.maxHeight = 96
         threadMessageAttachmentsHolder.addView(imageView.root)
+        if (!message.isReceivedMessage()){
+            threadMessageAttachmentsHolder.rotationY = 180f
+        }
         val placeholderDrawable = ColorDrawable(Color.TRANSPARENT)
         val isTallImage = attachment.height > attachment.width
         val transformation = if (isTallImage) CenterCrop() else FitCenter()
