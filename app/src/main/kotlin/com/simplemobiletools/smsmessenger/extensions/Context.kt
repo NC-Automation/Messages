@@ -381,7 +381,10 @@ fun Context.getMmsAttachment(id: Long, getImageResolutions: Boolean): MessageAtt
     val projection = arrayOf(
         Mms._ID,
         Mms.Part.CONTENT_TYPE,
-        Mms.Part.TEXT
+        Mms.Part.TEXT,
+        Mms.Part.FILENAME,
+        Mms.Part.NAME,
+        Mms.Part.CONTENT_ID
     )
     val selection = "${Mms.Part.MSG_ID} = ?"
     val selectionArgs = arrayOf(id.toString())
@@ -410,13 +413,13 @@ fun Context.getMmsAttachment(id: Long, getImageResolutions: Boolean): MessageAtt
                 }
             }
             
-            val mimeTypeMap = MimeTypeMap.getSingleton()
-            val extension = mimeTypeMap.getExtensionFromMimeType(mimetype)
-            val filename = File(fileUri.path).name + "." + extension
-            val attachment = Attachment(partId, id, fileUri.toString(), mimetype, width, height, filename?:"Image1.jpg")
+            var filename = getFileName(cursor)
+            val attachment = Attachment(partId, id, fileUri.toString(), mimetype, width, height, filename)
             messageAttachment.attachments.add(attachment)
         } else if (mimetype != "application/smil") {
-            val attachmentName = attachmentNames?.getOrNull(attachmentCount) ?: ""
+            var attachmentName = attachmentNames?.getOrNull(attachmentCount) ?: ""
+            var filename = getFileName(cursor)
+            if (attachmentName.isNullOrEmpty()) attachmentName = filename?:""
             val attachment = Attachment(partId, id, Uri.withAppendedPath(uri, partId.toString()).toString(), mimetype, 0, 0, attachmentName)
             messageAttachment.attachments.add(attachment)
             attachmentCount++
@@ -427,6 +430,27 @@ fun Context.getMmsAttachment(id: Long, getImageResolutions: Boolean): MessageAtt
     }
 
     return messageAttachment
+}
+
+private fun getFileName(cursor: Cursor) : String {
+    val uri = if (isQPlus()) {
+        Mms.Part.CONTENT_URI
+    } else {
+        Uri.parse("content://mms/part")
+    }
+    val partId = cursor.getLongValue(Mms._ID)
+    var contentId = cursor.getStringValue(Mms.Part.CONTENT_ID)
+    val mimetype = cursor.getStringValue(Mms.Part.CONTENT_TYPE)
+    val fileUri = Uri.withAppendedPath(uri, partId.toString())
+    val mimeTypeMap = MimeTypeMap.getSingleton()
+    val extension = mimeTypeMap.getExtensionFromMimeType(mimetype)
+    var filename = cursor.getStringValue(Mms.Part.FILENAME)
+    if (filename.isNullOrEmpty()) filename = cursor.getStringValue(Mms.Part.NAME)
+    if (filename.isNullOrEmpty() && !contentId.isNullOrEmpty()){
+        filename = contentId.removePrefix("<").removeSuffix(">").replace("_", " ") + "." + extension
+    }
+    if (filename.isNullOrEmpty()) filename = File(fileUri.path).name + "." + extension
+    return filename
 }
 
 fun Context.getLatestMMS(): Message? {
