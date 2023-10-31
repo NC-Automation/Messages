@@ -5,9 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.text.set
 import com.simplemobiletools.commons.activities.ManageBlockedNumbersActivity
 import com.simplemobiletools.commons.dialogs.*
 import com.simplemobiletools.commons.extensions.*
@@ -16,6 +14,7 @@ import com.simplemobiletools.commons.models.RadioItem
 import com.simplemobiletools.smsmessenger.R
 import com.simplemobiletools.smsmessenger.databinding.ActivitySettingsBinding
 import com.simplemobiletools.smsmessenger.dialogs.ExportMessagesDialog
+import com.simplemobiletools.smsmessenger.dialogs.ExportMessagesProgressDialog
 import com.simplemobiletools.smsmessenger.extensions.config
 import com.simplemobiletools.smsmessenger.extensions.emptyMessagesRecycleBin
 import com.simplemobiletools.smsmessenger.extensions.messagesDB
@@ -123,26 +122,7 @@ class SettingsActivity : SimpleActivity() {
     }
 
     private fun exportMessages(uri: Uri) {
-        ensureBackgroundThread {
-            try {
-                MessagesReader(this).getMessagesToExport(config.exportSms, config.exportMms) { messagesToExport ->
-                    if (messagesToExport.isEmpty()) {
-                        toast(com.simplemobiletools.commons.R.string.no_entries_for_exporting)
-                        return@getMessagesToExport
-                    }
-                    val json = Json { encodeDefaults = true }
-                    val jsonString = json.encodeToString(messagesToExport)
-                    val outputStream = contentResolver.openOutputStream(uri)!!
-
-                    outputStream.use {
-                        it.write(jsonString.toByteArray())
-                    }
-                    toast(com.simplemobiletools.commons.R.string.exporting_successful)
-                }
-            } catch (e: Exception) {
-                showErrorToast(e)
-            }
-        }
+        ExportMessagesProgressDialog(this, uri)
     }
 
     override fun onPause() {

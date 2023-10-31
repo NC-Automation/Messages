@@ -103,6 +103,9 @@ class Config(context: Context) : BaseConfig(context) {
     var exportMms: Boolean
         get() = prefs.getBoolean(EXPORT_MMS, true)
         set(exportMms) = prefs.edit().putBoolean(EXPORT_MMS, exportMms).apply()
+    var exportAttachments: Boolean
+        get() = prefs.getBoolean(EXPORT_ATTACHMENTS, true)
+        set(exportAttachments) = prefs.edit().putBoolean(EXPORT_ATTACHMENTS, exportAttachments).apply()
 
     var importSms: Boolean
         get() = prefs.getBoolean(IMPORT_SMS, true)

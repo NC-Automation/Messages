@@ -6,19 +6,24 @@ import android.net.Uri
 import android.provider.Telephony.Mms
 import android.provider.Telephony.Sms
 import android.util.Base64
+import android.widget.TextView
 import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.helpers.isQPlus
 import com.simplemobiletools.commons.helpers.isRPlus
+import com.simplemobiletools.smsmessenger.dialogs.ExportMessagesProgressDialog
 import com.simplemobiletools.smsmessenger.extensions.getConversationIds
 import com.simplemobiletools.smsmessenger.models.*
 import java.io.IOException
 import java.io.InputStream
 
 class MessagesReader(private val context: Context) {
-
+    lateinit var status:TextView
+    lateinit var dialog:ExportMessagesProgressDialog
     fun getMessagesToExport(
-        getSms: Boolean, getMms: Boolean, callback: (messages: List<MessagesBackup>) -> Unit
+        getSms: Boolean, getMms: Boolean, dialog: ExportMessagesProgressDialog, includeAttachments: Boolean, callback: (messages: List<MessagesBackup>) -> Unit
     ) {
+        status = dialog.status
+        this.dialog = dialog
         val conversationIds = context.getConversationIds()
         var smsMessages = listOf<SmsBackup>()
         var mmsMessages = listOf<MmsBackup>()
@@ -27,7 +32,7 @@ class MessagesReader(private val context: Context) {
             smsMessages = getSmsMessages(conversationIds)
         }
         if (getMms) {
-            mmsMessages = getMmsMessages(conversationIds)
+            mmsMessages = getMmsMessages(conversationIds, includeAttachments)
         }
         callback(smsMessages + mmsMessages)
     }
@@ -46,30 +51,44 @@ class MessagesReader(private val context: Context) {
             Sms.TYPE,
             Sms.SERVICE_CENTER
         )
-
+        var count = countRows(Sms.CONTENT_URI)
+        try {
+            status.text = "Getting SMS Messages..."
+        } catch (e:Exception){
+            var a = e
+        }
         val selection = "${Sms.THREAD_ID} = ?"
         val smsList = mutableListOf<SmsBackup>()
-
-        threadIds.map { it.toString() }.forEach { threadId ->
-            context.queryCursor(Sms.CONTENT_URI, projection, selection, arrayOf(threadId)) { cursor ->
-                val subscriptionId = cursor.getLongValue(Sms.SUBSCRIPTION_ID)
-                val address = cursor.getStringValue(Sms.ADDRESS)
-                val body = cursor.getStringValueOrNull(Sms.BODY)
-                val date = cursor.getLongValue(Sms.DATE)
-                val dateSent = cursor.getLongValue(Sms.DATE_SENT)
-                val locked = cursor.getIntValue(Sms.DATE_SENT)
-                val protocol = cursor.getStringValueOrNull(Sms.PROTOCOL)
-                val read = cursor.getIntValue(Sms.READ)
-                val status = cursor.getIntValue(Sms.STATUS)
-                val type = cursor.getIntValue(Sms.TYPE)
-                val serviceCenter = cursor.getStringValueOrNull(Sms.SERVICE_CENTER)
-                smsList.add(SmsBackup(subscriptionId, address, body, date, dateSent, locked, protocol, read, status, type, serviceCenter))
+        try{
+            var count = threadIds.count()
+            var num = 0
+            threadIds.map { it.toString() }.forEach { threadId ->
+                num++
+                status.text = "Getting SMS messages for\nConversation $num of $count..."
+                if (dialog.isCanceled) return smsList
+                context.queryCursor(Sms.CONTENT_URI, projection, selection, arrayOf(threadId)) { cursor ->
+                    val subscriptionId = cursor.getLongValue(Sms.SUBSCRIPTION_ID)
+                    val address = cursor.getStringValue(Sms.ADDRESS)
+                    val body = cursor.getStringValueOrNull(Sms.BODY)
+                    val date = cursor.getLongValue(Sms.DATE)
+                    val dateSent = cursor.getLongValue(Sms.DATE_SENT)
+                    val locked = cursor.getIntValue(Sms.DATE_SENT)
+                    val protocol = cursor.getStringValueOrNull(Sms.PROTOCOL)
+                    val read = cursor.getIntValue(Sms.READ)
+                    val status = cursor.getIntValue(Sms.STATUS)
+                    val type = cursor.getIntValue(Sms.TYPE)
+                    val serviceCenter = cursor.getStringValueOrNull(Sms.SERVICE_CENTER)
+                    smsList.add(SmsBackup(subscriptionId, address, body, date, dateSent, locked, protocol, read, status, type, serviceCenter))
+                }
             }
+        } catch (e:Exception){
+            var a = e
         }
+
         return smsList
     }
 
-    private fun getMmsMessages(threadIds: List<Long>, includeTextOnlyAttachment: Boolean = false): List<MmsBackup> {
+    private fun getMmsMessages(threadIds: List<Long>, includeAttachment: Boolean = false): List<MmsBackup> {
         val projection = arrayOf(
             Mms._ID,
             Mms.CREATOR,
@@ -89,20 +108,29 @@ class MessagesReader(private val context: Context) {
             Mms.SUBSCRIPTION_ID,
             Mms.TRANSACTION_ID
         )
-        val selection = if (includeTextOnlyAttachment) {
+        val selection = if (false) {
             "${Mms.THREAD_ID} = ? AND ${Mms.TEXT_ONLY} = ?"
         } else {
             "${Mms.THREAD_ID} = ?"
         }
         val mmsList = mutableListOf<MmsBackup>()
-
+        if (dialog.isCanceled) return mmsList
+        var count = threadIds.count()
+        var num = 0
         threadIds.map { it.toString() }.forEach { threadId ->
-            val selectionArgs = if (includeTextOnlyAttachment) {
+            val selectionArgs = if (false) {
                 arrayOf(threadId, "1")
             } else {
                 arrayOf(threadId)
             }
+            num++
+
+            var msgNum = 0
+            if (dialog.isCanceled) return mmsList
             context.queryCursor(Mms.CONTENT_URI, projection, selection, selectionArgs) { cursor ->
+                msgNum++
+                status.text = "Getting MMS messages for\nconversation $num of $count\nMessage $msgNum of ${cursor.count}"
+                if (dialog.isCanceled) return@queryCursor
                 val mmsId = cursor.getLongValue(Mms._ID)
                 val creator = cursor.getStringValueOrNull(Mms.CREATOR)
                 val contentType = cursor.getStringValueOrNull(Mms.CONTENT_TYPE)
@@ -122,7 +150,7 @@ class MessagesReader(private val context: Context) {
                 val subscriptionId = cursor.getLongValue(Mms.SUBSCRIPTION_ID)
                 val transactionId = cursor.getStringValueOrNull(Mms.TRANSACTION_ID)
 
-                val parts = getParts(mmsId)
+                val parts = getParts(mmsId, includeAttachment)
                 val addresses = getMmsAddresses(mmsId)
                 mmsList.add(
                     MmsBackup(
@@ -153,7 +181,7 @@ class MessagesReader(private val context: Context) {
     }
 
     @SuppressLint("NewApi")
-    private fun getParts(mmsId: Long): List<MmsPart> {
+    private fun getParts(mmsId: Long, includeAttachments: Boolean = false): List<MmsPart> {
         val parts = mutableListOf<MmsPart>()
         val uri = if (isQPlus()) Mms.Part.CONTENT_URI else Uri.parse("content://mms/part")
         val projection = arrayOf(
@@ -194,12 +222,17 @@ class MessagesReader(private val context: Context) {
                 }
 
                 else -> {
-                    usePart(partId) { stream ->
-                        Base64.encodeToString(stream.readBytes(), Base64.DEFAULT)
+                    if (includeAttachments){
+                        usePart(partId) { stream ->
+                            Base64.encodeToString(stream.readBytes(), Base64.DEFAULT)
+                        }
                     }
+                    else null
                 }
             }
-            parts.add(MmsPart(contentDisposition, charset, contentId, contentLocation, contentType, ctStart, ctType, filename, name, sequenceOrder, text, data))
+            if (data != null){
+                parts.add(MmsPart(contentDisposition, charset, contentId, contentLocation, contentType, ctStart, ctType, filename, name, sequenceOrder, text, data))
+            }
         }
         return parts
     }
