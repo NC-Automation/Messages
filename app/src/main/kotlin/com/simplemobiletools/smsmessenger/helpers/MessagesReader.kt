@@ -286,4 +286,17 @@ class MessagesReader(private val context: Context) {
             return cursor.count
         }
     }
+
+    fun countUnreadMessages(threadId: Long): Int {
+        var cnt = 0
+        val selection = "read=0 and ${Sms.THREAD_ID} = ?"
+        val selectionArgs = arrayOf(threadId.toString())
+
+        var cursor = context.contentResolver.query(Sms.CONTENT_URI, null, selection, selectionArgs, null)
+        cnt += cursor?.count?:0
+        cursor = context.contentResolver.query(Mms.CONTENT_URI, null, selection, selectionArgs, null)
+        cnt += cursor?.count?:0
+        return cnt
+    }
+
 }

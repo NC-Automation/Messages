@@ -21,6 +21,7 @@ import com.simplemobiletools.commons.views.MyRecyclerView
 import com.simplemobiletools.smsmessenger.activities.SimpleActivity
 import com.simplemobiletools.smsmessenger.databinding.ItemConversationBinding
 import com.simplemobiletools.smsmessenger.extensions.*
+import com.simplemobiletools.smsmessenger.helpers.MessagesReader
 import com.simplemobiletools.smsmessenger.models.Conversation
 import java.util.Calendar
 import java.util.Locale
@@ -150,9 +151,9 @@ abstract class BaseConversationsAdapter(
             } else {
                 conversationBodyShort.alpha = 0.6f
                 conversationNewIndicatorL.isVisible = true
-                conversationNewCount.text = "!"
+                var count = MessagesReader(activity).countUnreadMessages(conversation.threadId)
+                conversationNewCount.text = count.toString()
                 if (conversation.isScheduled) Typeface.ITALIC else Typeface.NORMAL
-                //if (conversation.isScheduled) Typeface.BOLD_ITALIC else Typeface.BOLD
             }
             conversationAddress.setTypeface(null, style)
             conversationBodyShort.setTypeface(null, style)
