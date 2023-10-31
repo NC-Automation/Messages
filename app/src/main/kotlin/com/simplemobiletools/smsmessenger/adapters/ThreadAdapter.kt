@@ -302,7 +302,7 @@ class ThreadAdapter(
             if (message.attachment?.attachments?.isNotEmpty() == true) {
                 threadMessageAttachmentsHolder.beVisible()
                 threadMessageAttachmentsHolder.removeAllViews()
-                val showImages = true
+                val showImages = false
                 for (attachment in message.attachment.attachments) {
                     val mimetype = attachment.mimetype
                     when {
