@@ -12,14 +12,13 @@ import android.text.format.DateFormat
 import android.text.format.DateUtils
 import android.util.Size
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
@@ -50,7 +49,6 @@ import com.simplemobiletools.smsmessenger.extensions.*
 import com.simplemobiletools.smsmessenger.helpers.*
 import com.simplemobiletools.smsmessenger.models.Attachment
 import com.simplemobiletools.smsmessenger.models.Message
-import com.simplemobiletools.smsmessenger.models.SIMCard
 import com.simplemobiletools.smsmessenger.models.ThreadItem
 import com.simplemobiletools.smsmessenger.models.ThreadItem.*
 import java.util.Calendar
@@ -304,10 +302,11 @@ class ThreadAdapter(
             if (message.attachment?.attachments?.isNotEmpty() == true) {
                 threadMessageAttachmentsHolder.beVisible()
                 threadMessageAttachmentsHolder.removeAllViews()
+                val showImages = true
                 for (attachment in message.attachment.attachments) {
                     val mimetype = attachment.mimetype
                     when {
-                        mimetype.isImageMimeType() || mimetype.isVideoMimeType() -> setupImageView(holder, binding = this, message, attachment)
+                        (mimetype.isImageMimeType() || mimetype.isVideoMimeType()) && showImages-> setupImageView(holder, binding = this, message, attachment)
                         mimetype.isVCardMimeType() -> setupVCardView(holder, threadMessageAttachmentsHolder, message, attachment)
                         else -> setupFileView(holder, threadMessageAttachmentsHolder, message, attachment)
                     }
@@ -465,8 +464,8 @@ class ThreadAdapter(
         val uri = attachment.getUri()
         //val uri = Uri.parse("android.resource://your.package.name/" + R.drawable.ic_image_vector);
         val imageView = ItemAttachmentImageBinding.inflate(layoutInflater)
-        imageView.root.maxWidth = 96
-        imageView.root.maxHeight = 96
+//        imageView.root.maxWidth = 96
+//        imageView.root.maxHeight = 96
         threadMessageAttachmentsHolder.addView(imageView.root)
         val placeholderDrawable = ColorDrawable(Color.TRANSPARENT)
         val isTallImage = attachment.height > attachment.width
@@ -539,6 +538,9 @@ class ThreadAdapter(
                 },
                 onLongClick = { holder.viewLongClicked() }
             )
+            if (!message.isReceivedMessage()) {
+                vcardAttachmentHolder.rotationY = 180f
+            }
         }.root
 
         parent.addView(vCardView)
@@ -563,6 +565,9 @@ class ThreadAdapter(
                 },
                 onLongClick = { holder.viewLongClicked() }
             )
+            if (!message.isReceivedMessage()){
+                documentAttachmentHolder.rotationY = 180f
+            }
         }.root
 
         parent.addView(attachmentView)
