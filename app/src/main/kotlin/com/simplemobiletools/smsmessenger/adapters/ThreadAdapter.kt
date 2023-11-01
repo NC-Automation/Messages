@@ -12,7 +12,6 @@ import android.text.format.DateFormat
 import android.text.format.DateUtils
 import android.util.Size
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -62,6 +61,7 @@ class ThreadAdapter(
     val deleteMessages: (messages: List<Message>, toRecycleBin: Boolean, fromRecycleBin: Boolean) -> Unit
 ) : MyRecyclerViewListAdapter<ThreadItem>(activity, recyclerView, ThreadItemDiffCallback(), itemClick) {
     private var fontSize = activity.getTextSize()
+    public var messageFontSize = activity.config.messageFontSize // getTextSize()
 
     @SuppressLint("MissingPermission")
     private val hasMultipleSIMCards = (activity.subscriptionManagerCompat().activeSubscriptionInfoList?.size ?: 0) > 1
@@ -281,7 +281,7 @@ class ThreadAdapter(
             threadMessageHolder.isSelected = selectedKeys.contains(message.hashCode())
             threadMessageBody.apply {
                 text = message.body
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize)
+                textSize = messageFontSize // setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize)
                 beVisibleIf(message.body.isNotEmpty())
                 setOnLongClickListener {
                     holder.viewLongClicked()
@@ -597,7 +597,7 @@ class ThreadAdapter(
 
     private fun setupThreadError(view: View) {
         val binding = ItemThreadErrorBinding.bind(view)
-        binding.threadError.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize - 4)
+        binding.threadError.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize)
     }
 
     private fun setupThreadSending(view: View) {

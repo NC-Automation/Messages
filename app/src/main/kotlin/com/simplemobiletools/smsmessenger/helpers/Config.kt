@@ -20,6 +20,9 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getBoolean(SHOW_CHARACTER_COUNTER, false)
         set(showCharacterCounter) = prefs.edit().putBoolean(SHOW_CHARACTER_COUNTER, showCharacterCounter).apply()
 
+    var messageFontSize: Float
+        get() = prefs.getFloat(MESSAGE_FONT_SIZE, 14f)
+        set(messageFontSize) = prefs.edit().putFloat(MESSAGE_FONT_SIZE, messageFontSize).apply()
     var autoForwardMms: Boolean
         get() = prefs.getBoolean(AUTO_FORWARD_MMS, false)
         set(autoForwardMms) = prefs.edit().putBoolean(AUTO_FORWARD_MMS, autoForwardMms).apply()

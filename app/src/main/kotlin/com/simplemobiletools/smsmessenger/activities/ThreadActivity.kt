@@ -26,11 +26,9 @@ import android.text.format.DateUtils
 import android.text.format.DateUtils.FORMAT_NO_YEAR
 import android.text.format.DateUtils.FORMAT_SHOW_DATE
 import android.text.format.DateUtils.FORMAT_SHOW_TIME
+import android.util.Log
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.KeyEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
@@ -79,7 +77,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.Calendar
 import java.util.Locale
-import kotlin.time.Duration.Companion.days
 
 class ThreadActivity : SimpleActivity() {
     private val MIN_DATE_TIME_DIFF_SECS = 300
@@ -117,6 +114,7 @@ class ThreadActivity : SimpleActivity() {
     private var isAttachmentPickerVisible = false
 
     private val binding by viewBinding(ActivityThreadBinding::inflate)
+    var scaleGestureDetector: ScaleGestureDetector? = null
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -133,7 +131,6 @@ class ThreadActivity : SimpleActivity() {
 
         updateMaterialActivityViews(binding.threadCoordinator, null, useTransparentNavigation = false, useTopSearchMenu = false)
         setupMaterialScrollListener(null, binding.threadToolbar)
-
         val extras = intent.extras
         if (extras == null) {
             toast(com.simplemobiletools.commons.R.string.unknown_error_occurred)
@@ -172,8 +169,14 @@ class ThreadActivity : SimpleActivity() {
         setupKeyboardListener()
         hideAttachmentPicker()
         maybeSetupRecycleBinView()
+        scaleGestureDetector = ScaleGestureDetector(this, CustomOnScaleGestureListener())
+
     }
 
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        scaleGestureDetector?.onTouchEvent(event)
+        return super.dispatchTouchEvent(event)
+    }
     override fun onResume() {
         super.onResume()
         setupToolbar(binding.threadToolbar, NavigationIcon.Arrow, statusBarColor = getProperBackgroundColor())
@@ -494,6 +497,11 @@ class ThreadActivity : SimpleActivity() {
                 addSelectedContact(contact)
             }
         }
+        if (allMessagesFetched) {
+            ensureBackgroundThread {
+                fetchNextMessages()
+            }
+        }
     }
 
     private fun scrollToBottom() {
@@ -609,6 +617,7 @@ class ThreadActivity : SimpleActivity() {
                 getOrCreateThreadAdapter().updateMessages(threadItems, itemAtRefreshIndex)
             }
         }
+        fetchNextMessages()
     }
 
     private fun loadConversation() {
@@ -943,13 +952,14 @@ class ThreadActivity : SimpleActivity() {
     private fun setThreadSims() {
         val currentSIMCard = availableSIMCards[currentSIMCardIndex]
         val sim = currentSIMCard.id.toString()
+
         getOrCreateThreadAdapter().apply {
             recyclerView.allViews.forEach {
                 try{
-                ItemMessageBinding.bind(it).apply {
-                    threadMessageSimIcon.beGoneIf(threadMessageSimNumber.text == sim)
-                    threadMessageSimNumber.beGoneIf(threadMessageSimNumber.text == sim)
-                }
+                    ItemMessageBinding.bind(it).apply {
+                        threadMessageSimIcon.beGoneIf(threadMessageSimNumber.text == sim)
+                        threadMessageSimNumber.beGoneIf(threadMessageSimNumber.text == sim)
+                    }
                 } catch (e:Exception){
                     val a = e
                 }
@@ -987,6 +997,21 @@ class ThreadActivity : SimpleActivity() {
         }
 
         return userPreferredSimIdx ?: senderPreferredSimIdx ?: systemPreferredSimIdx ?: 0
+    }
+
+    private fun setThreadFontSize() {
+        getOrCreateThreadAdapter().apply {
+            this.messageFontSize = activity.config.messageFontSize
+            recyclerView.allViews.forEach {
+                try{
+                    ItemMessageBinding.bind(it).apply {
+                        threadMessageBody.textSize = activity.config.messageFontSize
+                    }
+                } catch (e:Exception){
+                    val a = e
+                }
+            }
+        }
     }
 
     private fun tryBlocking() {
@@ -1945,5 +1970,24 @@ class ThreadActivity : SimpleActivity() {
         resources.getColor(com.simplemobiletools.commons.R.color.you_bottom_bar_color)
     } else {
         getBottomNavigationBackgroundColor()
+    }
+
+    inner class CustomOnScaleGestureListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            val scaleFactor = detector.scaleFactor
+            var size = config.messageFontSize * scaleFactor
+            if (size < 10) size = 10f
+            if (size > 22) size = 22f
+            config.messageFontSize = size
+            setThreadFontSize()
+            Log.d("Tag", size.toString())
+            return true
+        }
+
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+            return true
+        }
+
+        override fun onScaleEnd(detector: ScaleGestureDetector) { }
     }
 }
