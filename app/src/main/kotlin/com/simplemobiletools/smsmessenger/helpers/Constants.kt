@@ -82,7 +82,7 @@ const val FILE_SIZE_600_KB = 614_400L
 const val FILE_SIZE_1_MB = 1_048_576L
 const val FILE_SIZE_2_MB = 2_097_152L
 
-const val MESSAGES_LIMIT = 30
+const val MESSAGES_LIMIT = 300
 
 // intent launch request codes
 const val PICK_PHOTO_INTENT = 42

@@ -140,7 +140,7 @@ abstract class BaseConversationsAdapter(
             }
 
             conversationDate.apply {
-                text = conversation.date.formatDateOrTime(context, true, false)
+                text = conversation.date.formatDateOrTime(true, false)
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize * 0.8f)
             }
 
@@ -173,7 +173,7 @@ abstract class BaseConversationsAdapter(
         }
     }
 
-    fun Int.formatDateOrTime(context: Context, hideTimeAtOtherDays: Boolean, showYearEvenIfCurrent: Boolean): String {
+    fun Int.formatDateOrTime(hideTimeAtOtherDays: Boolean = true, showYearEvenIfCurrent: Boolean = false): String {
         val cal = Calendar.getInstance(Locale.ENGLISH)
         cal.timeInMillis = this * 1000L
 
@@ -193,7 +193,7 @@ abstract class BaseConversationsAdapter(
         }
     }
 
-    override fun onChange(position: Int) = currentList.getOrNull(position)?.title ?: ""
+    override fun onChange(position: Int) = currentList.getOrNull(position)?.date?.formatDateOrTime() ?: ""
 
     private fun saveRecyclerViewState() {
         recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
