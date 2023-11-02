@@ -478,13 +478,6 @@ class MainActivity : SimpleActivity() {
         }
     }
 
-    private fun launchShowStared() {
-        hideKeyboard()
-        Intent(this, NewConversationActivity::class.java).apply {
-            startActivity(this)
-        }
-    }
-
     @SuppressLint("NewApi")
     private fun checkShortcut() {
         val appIconColor = config.appIconColor
@@ -558,14 +551,14 @@ class MainActivity : SimpleActivity() {
             ensureBackgroundThread {
                 var ids = config.staredMessageIds?.toList() ?: arrayListOf()
                 var messages = messagesDB.getStaredMessages(ids)
-                messages.sortedByDescending { it.id }.forEach { message ->
+                messages.sortedByDescending { it.date }.forEach { message ->
                     var recipient = message.senderName
                     if (recipient.isEmpty() && message.participants.isNotEmpty()) {
                         val participantNames = message.participants.map { it.name }
                         recipient = TextUtils.join(", ", participantNames)
                     }
 
-                    val date = message.date.formatDateOrTime(this, true, true)
+                    val date = message.date.formatDateOrTime()
                     val searchResult = SearchResult(message.id, recipient, message.body, date, message.threadId, message.senderPhotoUri)
                     searchResults.add(searchResult)
                 }
@@ -605,14 +598,14 @@ class MainActivity : SimpleActivity() {
             searchResults.add(searchResult)
         }
 
-        messages.sortedByDescending { it.id }.forEach { message ->
+        messages.sortedByDescending { it.date }.forEach { message ->
             var recipient = message.senderName
             if (recipient.isEmpty() && message.participants.isNotEmpty()) {
                 val participantNames = message.participants.map { it.name }
                 recipient = TextUtils.join(", ", participantNames)
             }
 
-            val date = message.date.formatDateOrTime(this, true, true)
+            val date = message.date.formatDateOrTime()
             val searchResult = SearchResult(message.id, recipient, message.body, date, message.threadId, message.senderPhotoUri)
             searchResults.add(searchResult)
         }

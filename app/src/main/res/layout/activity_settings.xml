@@ -120,6 +120,7 @@
             <RelativeLayout
                 android:id="@+id/settings_change_date_time_format_holder"
                 style="@style/SettingsHolderTextViewOneLinerStyle"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

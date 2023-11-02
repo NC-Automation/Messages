@@ -1,5 +1,7 @@
 package com.simplemobiletools.smsmessenger.adapters
 
+import android.text.format.DateFormat
+import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.Menu
 import android.view.View
@@ -8,11 +10,14 @@ import com.bumptech.glide.Glide
 import com.simplemobiletools.commons.adapters.MyRecyclerViewAdapter
 import com.simplemobiletools.commons.extensions.getTextSize
 import com.simplemobiletools.commons.extensions.highlightTextPart
+import com.simplemobiletools.commons.extensions.isThisYear
 import com.simplemobiletools.commons.helpers.SimpleContactsHelper
 import com.simplemobiletools.commons.views.MyRecyclerView
 import com.simplemobiletools.smsmessenger.activities.SimpleActivity
 import com.simplemobiletools.smsmessenger.databinding.ItemSearchResultBinding
 import com.simplemobiletools.smsmessenger.models.SearchResult
+import java.util.Calendar
+import java.util.Locale
 
 class SearchResultsAdapter(
     activity: SimpleActivity, var searchResults: ArrayList<SearchResult>, recyclerView: MyRecyclerView, highlightText: String, itemClick: (Any) -> Unit
