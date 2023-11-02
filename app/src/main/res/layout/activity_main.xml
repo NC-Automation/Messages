@@ -136,6 +136,51 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/stared_conversations_fab_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="64dp"
+        android:layout_marginLeft="16dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/stared_conversations_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star_vector"/>
+        
+        <RelativeLayout
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignEnd="@id/stared_conversations_fab"
+            android:layout_alignTop="@id/stared_conversations_fab"
+            android:layout_marginEnd="3dp"
+            android:layout_marginTop="3dp"
+            android:alpha="0.9"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_sim_vector"
+            android:elevation="7dp"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_circle" />
+            <TextView
+                android:id="@+id/stared_conversations_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:textSize="12dp"
+                tools:text="1"
+                tools:textColor="#FFFFFF"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
     <com.simplemobiletools.commons.views.MyFloatingActionButton
         android:id="@+id/conversations_fab"
         android:layout_width="wrap_content"

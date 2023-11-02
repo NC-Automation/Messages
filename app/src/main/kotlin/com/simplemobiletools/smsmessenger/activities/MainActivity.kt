@@ -6,6 +6,7 @@ import android.app.role.RoleManager
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
+import android.graphics.Color
 import android.graphics.drawable.Icon
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.simplemobiletools.smsmessenger.models.SearchResult
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import com.simplemobiletools.commons.R as R1
 
 class MainActivity : SimpleActivity() {
     private val MAKE_DEFAULT_APP_REQUEST = 1
@@ -106,7 +108,13 @@ class MainActivity : SimpleActivity() {
         binding.conversationsProgressBar.trackColor = properPrimaryColor.adjustAlpha(LOWER_ALPHA)
         checkShortcut()
         (binding.conversationsFab.layoutParams as? CoordinatorLayout.LayoutParams)?.bottomMargin =
-            navigationBarHeight + resources.getDimension(com.simplemobiletools.commons.R.dimen.activity_margin).toInt()
+            navigationBarHeight + resources.getDimension(R1.dimen.activity_margin).toInt()
+        (binding.staredConversationsFab.layoutParams as? CoordinatorLayout.LayoutParams)?.bottomMargin =
+            navigationBarHeight + resources.getDimension(R1.dimen.activity_margin).toInt()
+        binding.staredConversationsFab.setColorFilter(Color.TRANSPARENT)
+        var count = config.staredMessageIds?.count()?:0
+        binding.staredConversationsCount.text = count.toString()
+        binding.staredConversationsFabHolder.beGoneIf(count == 0)
     }
 
     override fun onPause() {
@@ -223,7 +231,7 @@ class MainActivity : SimpleActivity() {
                     startActivityForResult(intent, MAKE_DEFAULT_APP_REQUEST)
                 }
             } else {
-                toast(com.simplemobiletools.commons.R.string.unknown_error_occurred)
+                toast(R1.string.unknown_error_occurred)
                 finish()
             }
         } else {
@@ -248,7 +256,7 @@ class MainActivity : SimpleActivity() {
                                 if (!granted) {
                                     PermissionRequiredDialog(
                                         activity = this,
-                                        textId = com.simplemobiletools.commons.R.string.allow_notifications_incoming_messages,
+                                        textId = R1.string.allow_notifications_incoming_messages,
                                         positiveActionCallback = { openNotificationSettings() })
                                 }
                             }
@@ -281,6 +289,9 @@ class MainActivity : SimpleActivity() {
 
         binding.conversationsFab.setOnClickListener {
             launchNewConversation()
+        }
+        binding.staredConversationsFab.setOnClickListener {
+            showStaredMessages()
         }
     }
 
@@ -463,6 +474,13 @@ class MainActivity : SimpleActivity() {
         }
     }
 
+    private fun launchShowStared() {
+        hideKeyboard()
+        Intent(this, NewConversationActivity::class.java).apply {
+            startActivity(this)
+        }
+    }
+
     @SuppressLint("NewApi")
     private fun checkShortcut() {
         val appIconColor = config.appIconColor
@@ -481,8 +499,8 @@ class MainActivity : SimpleActivity() {
     @SuppressLint("NewApi")
     private fun getCreateNewContactShortcut(appIconColor: Int): ShortcutInfo {
         val newEvent = getString(R.string.new_conversation)
-        val drawable = resources.getDrawable(com.simplemobiletools.commons.R.drawable.shortcut_plus)
-        (drawable as LayerDrawable).findDrawableByLayerId(com.simplemobiletools.commons.R.id.shortcut_plus_background).applyColorFilter(appIconColor)
+        val drawable = resources.getDrawable(R1.drawable.shortcut_plus)
+        (drawable as LayerDrawable).findDrawableByLayerId(R1.id.shortcut_plus_background).applyColorFilter(appIconColor)
         val bmp = drawable.convertToBitmap()
 
         val intent = Intent(this, NewConversationActivity::class.java)
@@ -514,6 +532,64 @@ class MainActivity : SimpleActivity() {
         } else {
             binding.searchPlaceholder.beVisible()
             binding.searchResultsList.beGone()
+        }
+    }
+
+    private fun showStaredMessages(){
+        if (binding.mainMenu.isSearchOpen) {
+            binding.mainMenu.closeSearch()
+            return
+        }
+        binding.mainMenu.isSearchOpen = true
+        binding.mainMenu.onSearchOpenListener?.invoke()
+        binding.mainMenu.binding.topToolbarSearchIcon.setImageResource(R1.drawable.ic_arrow_left_vector)
+        binding.mainMenu.binding.topToolbarSearchIcon.contentDescription = resources.getString(R1.string.back)
+        if (binding.searchHolder.alpha < 1f) {
+            binding.searchHolder.fadeIn()
+        }
+        binding.searchPlaceholder2.beGone()
+
+        val searchResults = ArrayList<SearchResult>()
+        try {
+            ensureBackgroundThread {
+                var ids = config.staredMessageIds?.toList() ?: arrayListOf()
+                var messages = messagesDB.getStaredMessages(ids)
+                messages.sortedByDescending { it.id }.forEach { message ->
+                    var recipient = message.senderName
+                    if (recipient.isEmpty() && message.participants.isNotEmpty()) {
+                        val participantNames = message.participants.map { it.name }
+                        recipient = TextUtils.join(", ", participantNames)
+                    }
+
+                    val date = message.date.formatDateOrTime(this, true, true)
+                    val searchResult = SearchResult(message.id, recipient, message.body, date, message.threadId, message.senderPhotoUri)
+                    searchResults.add(searchResult)
+                }
+
+                runOnUiThread {
+                    binding.searchResultsList.beVisibleIf(searchResults.isNotEmpty())
+                    binding.searchPlaceholder.beVisibleIf(searchResults.isEmpty())
+
+                    val currAdapter = binding.searchResultsList.adapter
+                    if (currAdapter == null) {
+                        SearchResultsAdapter(this, searchResults, binding.searchResultsList, "") {
+                            hideKeyboard()
+                            Intent(this, ThreadActivity::class.java).apply {
+                                putExtra(THREAD_ID, (it as SearchResult).threadId)
+                                putExtra(THREAD_TITLE, it.title)
+                                putExtra(SEARCHED_MESSAGE_ID, it.messageId)
+                                startActivity(this)
+                            }
+                        }.apply {
+                            binding.searchResultsList.adapter = this
+                        }
+                    } else {
+                        (currAdapter as SearchResultsAdapter).updateItems(searchResults, "")
+                    }
+                }
+            }
+        } catch (e:Exception) {
+            var a = e
         }
     }
 
@@ -581,12 +657,12 @@ class MainActivity : SimpleActivity() {
         val faqItems = arrayListOf(
             FAQItem(R.string.faq_2_title, R.string.faq_2_text),
             FAQItem(R.string.faq_3_title, R.string.faq_3_text),
-            FAQItem(com.simplemobiletools.commons.R.string.faq_9_title_commons, com.simplemobiletools.commons.R.string.faq_9_text_commons)
+            FAQItem(R1.string.faq_9_title_commons, R1.string.faq_9_text_commons)
         )
 
-        if (!resources.getBoolean(com.simplemobiletools.commons.R.bool.hide_google_relations)) {
+        if (!resources.getBoolean(R1.bool.hide_google_relations)) {
             //faqItems.add(FAQItem(com.simplemobiletools.commons.R.string.faq_2_title_commons, com.simplemobiletools.commons.R.string.faq_2_text_commons))
-            faqItems.add(FAQItem(com.simplemobiletools.commons.R.string.faq_6_title_commons, com.simplemobiletools.commons.R.string.faq_6_text_commons))
+            faqItems.add(FAQItem(R1.string.faq_6_title_commons, R1.string.faq_6_text_commons))
         }
 
         startAboutActivity(R.string.app_name, licenses, BuildConfig.VERSION_NAME, faqItems, true)

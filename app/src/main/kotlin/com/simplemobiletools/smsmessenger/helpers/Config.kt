@@ -1,6 +1,7 @@
 package com.simplemobiletools.smsmessenger.helpers
 
 import android.content.Context
+import androidx.collection.ArraySet
 import com.simplemobiletools.commons.helpers.BaseConfig
 import com.simplemobiletools.smsmessenger.extensions.getDefaultKeyboardHeight
 import com.simplemobiletools.smsmessenger.models.Conversation
@@ -137,4 +138,7 @@ class Config(context: Context) : BaseConfig(context) {
     var isArchiveAvailable: Boolean
         get() = prefs.getBoolean(IS_ARCHIVE_AVAILABLE, true)
         set(isArchiveAvailable) = prefs.edit().putBoolean(IS_ARCHIVE_AVAILABLE, isArchiveAvailable).apply()
+    var staredMessageIds: Set<String>
+        get() = prefs.getStringSet(STARED_MESSAGE_IDS, setOf<String>())?: setOf()
+        set(staredMessageIds) = prefs.edit().putStringSet(STARED_MESSAGE_IDS, staredMessageIds).apply()
 }

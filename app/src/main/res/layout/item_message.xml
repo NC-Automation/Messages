@@ -101,6 +101,24 @@
                 android:layout_marginEnd="1dp"
                 tools:rotationY="180">
                 <ImageView
+                    android:id="@+id/thread_message_star"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:alpha="0.9"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:paddingStart="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingBottom="0dp"
+                    android:layout_marginBottom="2dp"
+                    android:src="@drawable/ic_star_vector"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/thread_message_sim_icon"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    tools:visibility="visible" />
+                <ImageView
                     android:id="@+id/thread_message_sim_icon"
                     android:layout_width="14dp"
                     android:layout_height="14dp"
@@ -113,7 +131,7 @@
                     android:src="@drawable/ic_sim_vector"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/thread_message_star"
                     app:layout_constraintEnd_toStartOf="@id/thread_message_time"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     tools:visibility="visible" />

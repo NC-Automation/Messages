@@ -4,17 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="AppCompatResource,AlwaysShowAction">
     <item
+        android:id="@+id/cab_star"
+        android:icon="@drawable/ic_star_vector"
+        android:title="Star"
+        android:enabled="true"
+        android:showAsAction="always"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/cab_copy_to_clipboard"
         android:icon="@drawable/ic_copy_vector"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/copy_to_clipboard"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/cab_share"
         android:icon="@drawable/ic_share_vector"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/share"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/cab_delete"
         android:icon="@drawable/ic_delete_vector"
@@ -26,7 +33,8 @@
         android:icon="@drawable/ic_save_vector"
         android:title="@string/save_as"
         android:enabled="false"
-        app:showAsAction="ifRoom" />
+        android:visible="false"
+        app:showAsAction="never" />
     <item
         android:id="@+id/cab_properties"
         android:icon="@drawable/ic_info_vector"

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout1"
+    style="@android:style/Widget.ActionButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/imageViewEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_star_vector"
+        app:tint="@null" />
+
+    <TextView
+        android:id="@+id/messageCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignStart="@id/imageViewEdit"
+        android:layout_alignEnd="@id/imageViewEdit"
+        android:layout_alignTop="@id/imageViewEdit"
+        android:layout_alignBottom="@id/imageViewEdit"
+        android:textColor="@color/hint_black"
+        android:text="5" />
+</RelativeLayout>

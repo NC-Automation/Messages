@@ -128,7 +128,6 @@ class ThreadActivity : SimpleActivity() {
         setContentView(binding.root)
         setupOptionsMenu()
         refreshMenuItems()
-
         updateMaterialActivityViews(binding.threadCoordinator, null, useTransparentNavigation = false, useTopSearchMenu = false)
         setupMaterialScrollListener(null, binding.threadToolbar)
         val extras = intent.extras
@@ -1085,6 +1084,33 @@ class ThreadActivity : SimpleActivity() {
                 finish()
             }
         }
+    }
+
+    fun starMessage(id:String){
+        var staredMessages = config.staredMessageIds.toMutableList()
+        var stared = !staredMessages.contains(id)
+        if (stared) {
+            staredMessages.add(id)
+        }
+        else {
+            staredMessages.remove(id)
+        }
+        config.staredMessageIds = staredMessages.toSet()
+        getOrCreateThreadAdapter().apply {
+            recyclerView.allViews.forEach {
+                try {
+                    ItemMessageBinding.bind(it).apply {
+                        if(threadMessageHolder.id.toString() == id) threadMessageStar.beVisibleIf(stared)
+                    }
+                } catch (e:Exception){
+                    val a = e
+                }
+            }
+        }
+    }
+
+    fun isStared(id:String) :Boolean{
+        return  config.staredMessageIds?.contains(id)?:false
     }
 
     private fun dialNumber() {

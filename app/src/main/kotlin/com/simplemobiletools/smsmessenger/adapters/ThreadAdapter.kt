@@ -76,7 +76,9 @@ class ThreadAdapter(
 
     override fun prepareActionMode(menu: Menu) {
         val isOneItemSelected = isOneItemSelected()
+
         val selectedItem = getSelectedItems().firstOrNull() as? Message
+        val stared = (activity as ThreadActivity).isStared(selectedItem?.id?.toString()?:"")
         val hasText = selectedItem?.body != null && selectedItem.body != ""
         menu.apply {
             findItem(R.id.cab_copy_to_clipboard).isVisible = isOneItemSelected && hasText
@@ -86,6 +88,7 @@ class ThreadAdapter(
             findItem(R.id.cab_select_text).isVisible = isOneItemSelected && hasText
             findItem(R.id.cab_properties).isVisible = isOneItemSelected
             findItem(R.id.cab_restore).isVisible = isRecycleBin
+            findItem(R.id.cab_star).isVisible = isOneItemSelected
         }
     }
 
@@ -104,6 +107,7 @@ class ThreadAdapter(
             R.id.cab_restore -> askConfirmRestore()
             R.id.cab_select_all -> selectAll()
             R.id.cab_properties -> showMessageDetails()
+            R.id.cab_star -> starMessage()
         }
     }
 
@@ -195,6 +199,11 @@ class ThreadAdapter(
         MessageDetailsDialog(activity, message)
     }
 
+    private fun starMessage() {
+        val message = getSelectedItems().firstOrNull() as? Message ?: return
+        (activity as ThreadActivity).starMessage(message.id.toString())
+    }
+
     private fun askConfirmDelete() {
         val itemsCnt = selectedKeys.size
 
@@ -277,7 +286,9 @@ class ThreadAdapter(
     }
 
     private fun setupView(holder: ViewHolder, view: View, message: Message) {
+        val stared = (activity as ThreadActivity).isStared(message.id.toString())
         ItemMessageBinding.bind(view).apply {
+            threadMessageHolder.id = message.id.toInt()
             threadMessageHolder.isSelected = selectedKeys.contains(message.hashCode())
             threadMessageBody.apply {
                 text = message.body
@@ -292,6 +303,7 @@ class ThreadAdapter(
                     holder.viewClicked(message)
                 }
             }
+            threadMessageStar.beVisibleIf(stared)
 
             if (message.isReceivedMessage()) {
                 setupReceivedMessageView(messageBinding = this, message = message)
