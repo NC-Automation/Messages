@@ -6,6 +6,7 @@ import android.app.role.RoleManager
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Icon
 import android.graphics.drawable.LayerDrawable
@@ -48,6 +49,8 @@ class MainActivity : SimpleActivity() {
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         isMaterialActivity = true
+        //this should take care of the nag screens
+        baseConfig.appRunCount = 1
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         appLaunched(BuildConfig.APPLICATION_ID)
@@ -112,6 +115,7 @@ class MainActivity : SimpleActivity() {
         (binding.staredConversationsFab.layoutParams as? CoordinatorLayout.LayoutParams)?.bottomMargin =
             navigationBarHeight + resources.getDimension(R1.dimen.activity_margin).toInt()
         binding.staredConversationsFab.setColorFilter(Color.TRANSPARENT)
+        binding.staredConversationsFab.backgroundTintList = ColorStateList.valueOf(properPrimaryColor)
         var count = config.staredMessageIds?.count()?:0
         binding.staredConversationsCount.text = count.toString()
         binding.staredConversationsFabHolder.beGoneIf(count == 0)
