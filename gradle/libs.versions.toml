@@ -30,7 +30,7 @@ shortcut-badger = "1.1.22"
 #versioning
 app-version-appId = "com.simplemobiletools.smsmessenger"
 app-version-versionCode = "85"
-app-version-versionName = "5.19.3"
+app-version-versionName = "6.0.0"
 [libraries]
 #AndroidX
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
