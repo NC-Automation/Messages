@@ -53,4 +53,8 @@ interface ConversationsDao {
 
     @Query("DELETE FROM conversations WHERE thread_id = :threadId")
     fun deleteThreadId(threadId: Long)
+    @Query("DELETE FROM conversations")
+    fun deleteAll()
+    @Query("SELECT * FROM conversations")
+    fun getAll(): List<Conversation>
 }

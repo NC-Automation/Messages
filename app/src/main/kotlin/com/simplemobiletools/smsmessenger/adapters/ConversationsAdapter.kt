@@ -179,6 +179,17 @@ class ConversationsAdapter(
             return
         }
 
+        //for performance we'll delete everything in one fell swoop if all items are selected
+        if (selectedKeys.count() == currentList.count()){
+            activity.deleteAllConversations()
+            activity.runOnUiThread {
+                activity.getConversations()
+                finishActMode()
+            }
+            return
+        }
+
+
         val conversationsToRemove = currentList.filter { selectedKeys.contains(it.hashCode()) } as ArrayList<Conversation>
         conversationsToRemove.forEach {
             activity.deleteConversation(it.threadId)

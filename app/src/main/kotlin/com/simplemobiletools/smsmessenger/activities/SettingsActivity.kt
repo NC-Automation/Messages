@@ -15,6 +15,7 @@ import com.simplemobiletools.smsmessenger.R
 import com.simplemobiletools.smsmessenger.databinding.ActivitySettingsBinding
 import com.simplemobiletools.smsmessenger.dialogs.ExportMessagesDialog
 import com.simplemobiletools.smsmessenger.dialogs.ExportMessagesProgressDialog
+import com.simplemobiletools.smsmessenger.dialogs.ImportMessagesDialog
 import com.simplemobiletools.smsmessenger.extensions.config
 import com.simplemobiletools.smsmessenger.extensions.emptyMessagesRecycleBin
 import com.simplemobiletools.smsmessenger.extensions.messagesDB
@@ -96,7 +97,7 @@ class SettingsActivity : SimpleActivity() {
 
     private val getContent = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            MessagesImporter(this).importMessages(uri)
+            ImportMessagesDialog(this, uri)
         }
     }
 

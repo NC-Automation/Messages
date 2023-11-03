@@ -69,7 +69,7 @@ class ExportMessagesProgressDialog(
                                     status.text = "Writing to file\nMessage $num of $cnt"
                                     Log.d("Tag", num.toString())
                                     if (isCanceled) return@getMessagesToExport
-                                    var jsonString = if (num == 1) "[" else ","
+                                    var jsonString = if (num == 1) "[" else "\n,"
                                     jsonString += json.encodeToString(messagesBackup)
 
                                     it.write(jsonString.toByteArray())

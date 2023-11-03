@@ -1,7 +1,11 @@
 package com.simplemobiletools.smsmessenger.helpers
 
 import android.net.Uri
+import android.os.Build
+import android.util.Log
 import android.util.Xml
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import com.simplemobiletools.commons.extensions.showErrorToast
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.commons.helpers.ensureBackgroundThread
@@ -13,9 +17,13 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 
-class MessagesImporter(private val activity: SimpleActivity) {
+class MessagesImporter(private val activity: SimpleActivity, private val dialog:ImportMessagesDialog) {
 
     private val messageWriter = MessagesWriter(activity)
     private val config = activity.config
@@ -39,16 +47,51 @@ class MessagesImporter(private val activity: SimpleActivity) {
 
     private fun importJson(uri: Uri) {
         try {
-            val jsonString = activity.contentResolver.openInputStream(uri)!!.use { inputStream ->
-                inputStream.bufferedReader().readText()
+            var messages = mutableListOf<MessagesBackup>()
+            var lastLine = ""
+            var count = 1
+            dialog.setStatus("Reading messages from file...")
+            activity.contentResolver.openInputStream(uri)!!.use { inputStream ->
+                inputStream.bufferedReader().forEachLine { line ->
+                    if (dialog.isCanceled){
+                        return@forEachLine
+                    }
+                    Log.d("tag", messages.count().toString())
+                    if (line.startsWith("[")) {
+                        lastLine = line.trimStart('[').trimEnd(']')
+                    }
+                    else
+                    {
+                        if (line.startsWith(",{\"subscription") || line.startsWith(",{\"creator")){
+                            //this is a new line
+                            if (lastLine.endsWith('}')) {
+                                dialog.setStatus("Reading messages from file (${count})...")
+                                count++
+                                var message = Json.decodeFromString<MessagesBackup>(lastLine)
+                                messages.add(message)
+                            }
+                            lastLine = line.trimStart(',').trimEnd(']')
+                        }
+                        else {
+                            //this is part of the same object
+                            lastLine += lastLine
+                        }
+                    }
+                }
             }
+            if (lastLine.startsWith("{") || lastLine.endsWith("}")){
+                var message = Json.decodeFromString<MessagesBackup>(lastLine)
+                messages.add(message)
+            }
+            if (dialog.isCanceled) return
 
-            val deserializedList = Json.decodeFromString<List<MessagesBackup>>(jsonString)
+            val deserializedList = messages.toList()
             if (deserializedList.isEmpty()) {
                 activity.toast(com.simplemobiletools.commons.R.string.no_entries_for_importing)
                 return
             }
-            ImportMessagesDialog(activity, deserializedList)
+            restoreMessages(messages)
+
         } catch (e: SerializationException) {
             activity.toast(com.simplemobiletools.commons.R.string.invalid_file_format)
         } catch (e: IllegalArgumentException) {
@@ -58,15 +101,29 @@ class MessagesImporter(private val activity: SimpleActivity) {
         }
     }
 
-    fun restoreMessages(messagesBackup: List<MessagesBackup>, callback: (ImportResult) -> Unit) {
+    private fun restoreMessages(messagesBackup: List<MessagesBackup>) {
         ensureBackgroundThread {
             try {
+                val sms = messagesBackup.count { it.backupType == BackupType.SMS }
+                val mms = messagesBackup.count { it.backupType == BackupType.MMS }
+                var total = 0
+                if (config.importSms) total+=sms
+                if (config.importMms) total+=mms
+                dialog.setProgress(0, total)
+
                 messagesBackup.forEach { message ->
+                    if (dialog.isCanceled){
+                        return@ensureBackgroundThread
+                    }
                     try {
                         if (message.backupType == BackupType.SMS && config.importSms) {
+                            dialog.setStatus("Importing message ${messagesImported + 1} of ${total}")
+                            dialog.setProgress(messagesImported + 1, total)
                             messageWriter.writeSmsMessage(message as SmsBackup)
                             messagesImported++
                         } else if (message.backupType == BackupType.MMS && config.importMms) {
+                            dialog.setStatus("Importing message ${messagesImported + 1} of ${total}")
+                            dialog.setProgress(messagesImported + 1, total)
                             messageWriter.writeMmsMessage(message as MmsBackup)
                             messagesImported++
                         }
@@ -79,15 +136,9 @@ class MessagesImporter(private val activity: SimpleActivity) {
             } catch (e: Exception) {
                 activity.showErrorToast(e)
             }
-
-            callback.invoke(
-                when {
-                    messagesImported == 0 && messagesFailed == 0 -> ImportResult.IMPORT_NOTHING_NEW
-                    messagesFailed > 0 && messagesImported > 0 -> ImportResult.IMPORT_PARTIAL
-                    messagesFailed > 0 -> ImportResult.IMPORT_FAIL
-                    else -> ImportResult.IMPORT_OK
-                }
-            )
+            var result = "Imported ${messagesImported} messages."
+            if (messagesFailed > 0) result += "\n${messagesFailed} messages failed to import."
+            dialog.setStatus("Import Completed!", result)
         }
     }
 

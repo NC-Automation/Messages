@@ -43,6 +43,7 @@ class MainActivity : SimpleActivity() {
     private var lastSearchedText = ""
     private var bus: EventBus? = null
     private var wasProtectionHandled = false
+    var isStarSearch = false
 
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
@@ -119,6 +120,7 @@ class MainActivity : SimpleActivity() {
         var count = config.staredMessageIds?.count()?:0
         binding.staredConversationsCount.text = count.toString()
         binding.staredConversationsFabHolder.beGoneIf(count == 0)
+        if (isStarSearch) updateStaredResults()
     }
 
     override fun onPause() {
@@ -511,6 +513,7 @@ class MainActivity : SimpleActivity() {
     }
 
     private fun searchTextChanged(text: String, forceUpdate: Boolean = false) {
+        isStarSearch = false
         if (!binding.mainMenu.isSearchOpen && !forceUpdate) {
             return
         }
@@ -537,6 +540,11 @@ class MainActivity : SimpleActivity() {
             binding.mainMenu.closeSearch()
             return
         }
+        updateStaredResults()
+    }
+
+    fun updateStaredResults(){
+        isStarSearch = true
         binding.mainMenu.isSearchOpen = true
         binding.mainMenu.onSearchOpenListener?.invoke()
         binding.mainMenu.binding.topToolbarSearchIcon.setImageResource(R1.drawable.ic_arrow_left_vector)
@@ -589,6 +597,7 @@ class MainActivity : SimpleActivity() {
             var a = e
         }
     }
+
 
     private fun showSearchResults(messages: List<Message>, conversations: List<Conversation>, searchedText: String) {
         val searchResults = ArrayList<SearchResult>()

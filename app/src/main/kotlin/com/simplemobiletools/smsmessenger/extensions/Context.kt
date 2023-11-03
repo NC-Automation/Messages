@@ -15,6 +15,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract.PhoneLookup
 import android.provider.OpenableColumns
+import android.provider.Telephony
 import android.provider.Telephony.*
 import android.telephony.SubscriptionManager
 import android.text.TextUtils
@@ -720,6 +721,30 @@ fun Context.deleteConversation(threadId: Long) {
 
     conversationsDB.deleteThreadId(threadId)
     messagesDB.deleteThreadMessages(threadId)
+}
+
+fun Context.deleteAllConversations() {
+    var uri = Sms.CONTENT_URI
+    try {
+        contentResolver.delete(uri, null, null)
+    } catch (e: Exception) {
+        showErrorToast(e)
+    }
+
+    uri = Mms.CONTENT_URI
+    try {
+        contentResolver.delete(uri, null, null)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+    try {
+        conversationsDB.deleteAll()
+        var c = conversationsDB.getAll()
+        messagesDB.deleteAll()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 
 fun Context.checkAndDeleteOldRecycleBinMessages(callback: (() -> Unit)? = null) {
