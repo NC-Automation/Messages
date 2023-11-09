@@ -266,6 +266,7 @@ class ThreadAdapter(
 
             if (attachment != null) {
                 putExtra(Intent.EXTRA_STREAM, attachment.getUri())
+                putExtra(Intent.EXTRA_REFERRER, "MessageForward")
             }
 
             activity.startActivity(this)

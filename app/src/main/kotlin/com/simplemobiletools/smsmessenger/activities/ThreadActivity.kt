@@ -755,13 +755,14 @@ class ThreadActivity : SimpleActivity() {
                 }
                 window.decorView.requestApplyInsets()
             }
+            val limitAttachments = !(intent.extras?.containsKey(Intent.EXTRA_REFERRER) == true && intent.getStringExtra(Intent.EXTRA_REFERRER) == "MessageForward")
 
             if (intent.extras?.containsKey(THREAD_ATTACHMENT_URI) == true) {
                 val uri = Uri.parse(intent.getStringExtra(THREAD_ATTACHMENT_URI))
-                addAttachment(uri)
+                addAttachment(uri, limitAttachments)
             } else if (intent.extras?.containsKey(THREAD_ATTACHMENT_URIS) == true) {
                 (intent.getSerializableExtra(THREAD_ATTACHMENT_URIS) as? ArrayList<Uri>)?.forEach {
-                    addAttachment(it)
+                    addAttachment(it, limitAttachments)
                 }
             }
             scrollToBottomFab.setOnClickListener {
@@ -1376,7 +1377,7 @@ class ThreadActivity : SimpleActivity() {
 
     private fun getAttachmentSelections() = getAttachmentsAdapter()?.attachments ?: emptyList()
 
-    private fun addAttachment(uri: Uri) {
+    private fun addAttachment(uri: Uri, limitAttachments: Boolean = false) {
         val id = uri.toString()
         if (getAttachmentSelections().any { it.id == id }) {
             toast(R.string.duplicate_item_warning)
@@ -1398,6 +1399,10 @@ class ThreadActivity : SimpleActivity() {
                 toast(R.string.attachment_sized_exceeds_max_limit, length = Toast.LENGTH_LONG)
                 return
             }
+        }
+        if (limitAttachments && !mimeType.contains("vcard")){
+            toast("File attachments are disabled.")
+            return
         }
 
         var adapter = getAttachmentsAdapter()

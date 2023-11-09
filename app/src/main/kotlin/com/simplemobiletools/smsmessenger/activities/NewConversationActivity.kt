@@ -248,7 +248,7 @@ class NewConversationActivity : SimpleActivity() {
             putExtra(THREAD_TITLE, name)
             putExtra(THREAD_TEXT, text)
             putExtra(THREAD_NUMBER, number)
-
+            if (intent.extras?.containsKey(Intent.EXTRA_REFERRER) == true) putExtra(Intent.EXTRA_REFERRER, intent.getStringExtra(Intent.EXTRA_REFERRER))
             if (intent.action == Intent.ACTION_SEND && intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
                 val uri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
                 putExtra(THREAD_ATTACHMENT_URI, uri?.toString())
