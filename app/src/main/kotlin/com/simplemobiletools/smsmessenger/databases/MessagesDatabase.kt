@@ -43,6 +43,7 @@ abstract class MessagesDatabase : RoomDatabase() {
                             .addMigrations(MIGRATION_6_7)
                             .addMigrations(MIGRATION_7_8)
                             .addMigrations(MIGRATION_8_9)
+                            .addMigrations(MIGRATION_9_10)
                             .build()
                     }
                 }
@@ -130,6 +131,17 @@ abstract class MessagesDatabase : RoomDatabase() {
                     execSQL("ALTER TABLE conversations ADD COLUMN vibrate INTEGER NOT NULL DEFAULT 1")
                     execSQL("ALTER TABLE conversations ADD COLUMN notifications INTEGER NOT NULL DEFAULT 1")
                     execSQL("ALTER TABLE conversations ADD COLUMN sound TEXT")
+                }
+            }
+        }
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.apply {
+                    execSQL("ALTER TABLE conversations ADD COLUMN custom_notification INTEGER NOT NULL DEFAULT 0")
+                    execSQL("ALTER TABLE conversations ADD COLUMN group_send_type INTEGER NOT NULL DEFAULT 0")
+                    execSQL("ALTER TABLE conversations DROP COLUMN vibrate")
+                    execSQL("ALTER TABLE conversations DROP COLUMN notifications")
+                    execSQL("ALTER TABLE conversations DROP COLUMN sound")
                 }
             }
         }
