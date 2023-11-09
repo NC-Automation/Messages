@@ -19,9 +19,11 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat.getSystemService
+import com.simplemobiletools.commons.compose.extensions.getActivity
 import com.simplemobiletools.commons.extensions.getProperPrimaryColor
 import com.simplemobiletools.commons.extensions.notificationManager
 import com.simplemobiletools.commons.helpers.*
+import com.simplemobiletools.smsmessenger.App
 import com.simplemobiletools.smsmessenger.R
 import com.simplemobiletools.smsmessenger.activities.ThreadActivity
 import com.simplemobiletools.smsmessenger.extensions.config
@@ -56,12 +58,16 @@ class NotificationHelper(private val context: Context) {
 
         ensureBackgroundThread {
             var conversation: Conversation? = context.conversationsDB.getConversationWithThreadId(threadId)
+            var app = (context.applicationContext as App)
+            var activeThread = app?.getActiveThreadId()
             var subscriptionId = context.messagesDB.getSubscriptionId(messageId)
             createChannels()
             var channelId = when {
                 subscriptionId != null -> "${NOTIFICATION_CHANNEL}_sim_${subscriptionId}"
                 else -> NOTIFICATION_CHANNEL
             }
+            if (activeThread == conversation?.threadId) channelId = "${NOTIFICATION_CHANNEL}_foreground"
+
             if (isRPlus() && conversation?.customNotification == true) {
                 channelId = getConversationChannel(conversation!!)
             }
@@ -248,13 +254,13 @@ class NotificationHelper(private val context: Context) {
             var id = NOTIFICATION_CHANNEL
             val importance = IMPORTANCE_HIGH
             //at some point it would be nice to support a separate channel for foreground syncs
-//            NotificationChannel(id + "_foreground", "Foreground syncs", importance).apply {
-//                setBypassDnd(false)
-//                enableLights(true)
-//                setSound(null, audioAttributes)
-//                enableVibration(false)
-//                notificationManager.createNotificationChannel(this)
-//            }
+            NotificationChannel(id + "_foreground", "Foreground syncs", importance).apply {
+                setBypassDnd(false)
+                enableLights(true)
+                setSound(null, audioAttributes)
+                enableVibration(false)
+                notificationManager.createNotificationChannel(this)
+            }
             NotificationChannel(id, "General notifications", importance).apply {
                 setBypassDnd(false)
                 enableLights(true)

@@ -52,6 +52,7 @@ import com.simplemobiletools.commons.models.PhoneNumber
 import com.simplemobiletools.commons.models.RadioItem
 import com.simplemobiletools.commons.models.SimpleContact
 import com.simplemobiletools.commons.views.MyRecyclerView
+import com.simplemobiletools.smsmessenger.App
 import com.simplemobiletools.smsmessenger.BuildConfig
 import com.simplemobiletools.smsmessenger.R
 import com.simplemobiletools.smsmessenger.adapters.AttachmentsAdapter
@@ -139,6 +140,7 @@ class ThreadActivity : SimpleActivity() {
         }
 
         threadId = intent.getLongExtra(THREAD_ID, 0L)
+        (application as App)?.setActiveThreadId(threadId)
         intent.getStringExtra(THREAD_TITLE)?.let {
             binding.threadToolbar.title = it
         }
@@ -180,7 +182,7 @@ class ThreadActivity : SimpleActivity() {
     override fun onResume() {
         super.onResume()
         setupToolbar(binding.threadToolbar, NavigationIcon.Arrow, statusBarColor = getProperBackgroundColor())
-
+        (application as App)?.setActiveThreadId(threadId)
         val smsDraft = getSmsDraft(threadId)
         if (smsDraft != null) {
             binding.messageHolder.threadTypeMessage.setText(smsDraft)
@@ -208,7 +210,7 @@ class ThreadActivity : SimpleActivity() {
 
     override fun onPause() {
         super.onPause()
-
+        (application as App)?.setActiveThreadId(null)
         if (binding.messageHolder.threadTypeMessage.value != "" && getAttachmentSelections().isEmpty()) {
             saveSmsDraft(binding.messageHolder.threadTypeMessage.value, threadId)
         } else {
@@ -1676,7 +1678,7 @@ class ThreadActivity : SimpleActivity() {
         oldestMessageDate = -1
 
         if (isActivityVisible) {
-            notificationManager.cancel(threadId.hashCode())
+            //notificationManager.cancel(threadId.hashCode())
         }
 
         val lastMaxId = messages.filterNot { it.isScheduled }.maxByOrNull { it.id }?.id ?: 0L
