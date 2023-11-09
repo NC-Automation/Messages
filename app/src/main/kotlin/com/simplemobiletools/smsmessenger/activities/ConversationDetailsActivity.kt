@@ -137,6 +137,10 @@ class ConversationDetailsActivity : SimpleActivity() {
             SEND_TYPE_SMS -> "SMS"
             else -> "Default (${ if (config.sendGroupMessageMMS) "MMS" else "SMS" })"
         }
+        binding.membersHeading.setOnClickListener {
+            setResult(MANAGE_PEOPLE_INTENT)
+            finish()
+        }
     }
 
     private fun setupParticipants() {

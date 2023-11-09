@@ -279,6 +279,11 @@ class ThreadActivity : SimpleActivity() {
                 it.isDigit()
             } && !isRecycleBin
         }
+        binding.threadToolbar.isClickable = true
+        binding.threadToolbar.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_UP) this.showConversationDetails()
+            return@setOnTouchListener super.onTouchEvent(motionEvent)
+        }
     }
 
     private fun setupOptionsMenu() {
@@ -307,6 +312,7 @@ class ThreadActivity : SimpleActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
+        if(resultCode == MANAGE_PEOPLE_INTENT) managePeople()
         if (resultCode != Activity.RESULT_OK) return
         val data = resultData?.data
         messageToResend = null
@@ -1128,7 +1134,7 @@ class ThreadActivity : SimpleActivity() {
         dialNumber(phoneNumber)
     }
 
-    private fun managePeople() {
+    fun managePeople() {
         if (binding.threadAddContacts.isVisible()) {
             hideKeyboard()
             binding.threadAddContacts.beGone()
@@ -1208,10 +1214,10 @@ class ThreadActivity : SimpleActivity() {
         }
     }
 
-    private fun showConversationDetails() {
+    public fun showConversationDetails() {
         Intent(this, ConversationDetailsActivity::class.java).apply {
             putExtra(THREAD_ID, threadId)
-            startActivity(this)
+            startActivityForResult(this, MANAGE_PEOPLE_INTENT)
         }
     }
 

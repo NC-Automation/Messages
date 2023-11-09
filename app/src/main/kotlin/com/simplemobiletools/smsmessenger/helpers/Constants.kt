@@ -94,6 +94,7 @@ const val CAPTURE_VIDEO_INTENT = 45
 const val CAPTURE_AUDIO_INTENT = 46
 const val PICK_DOCUMENT_INTENT = 47
 const val PICK_CONTACT_INTENT = 48
+const val MANAGE_PEOPLE_INTENT = 49
 
 //group message send tye
 const val SEND_TYPE_DEFAULT = 0
