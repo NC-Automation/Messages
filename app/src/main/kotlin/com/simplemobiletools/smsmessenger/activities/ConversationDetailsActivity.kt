@@ -120,7 +120,7 @@ class ConversationDetailsActivity : SimpleActivity() {
             setDetails(isChecked, conversation!!.groupSendType)
             if (!isChecked) NotificationHelper(this@ConversationDetailsActivity).deleteChannel(conversation!!.threadId)
         }
-
+        binding.groupSendMethodHolder.beVisibleIf(conversation!!.isGroupConversation)
         binding.groupSendMethodHolder.setOnClickListener {
             val items = arrayListOf(
                 RadioItem(SEND_TYPE_DEFAULT, "Default (${ if (config.sendGroupMessageMMS) "MMS" else "SMS" })"),
