@@ -1,17 +1,29 @@
 package com.simplemobiletools.smsmessenger.activities
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.media.AudioManager
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.core.content.res.ResourcesCompat
+import com.simplemobiletools.commons.dialogs.RadioGroupDialog
 import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.helpers.NavigationIcon
 import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.simplemobiletools.commons.helpers.isRPlus
+import com.simplemobiletools.commons.models.RadioItem
 import com.simplemobiletools.commons.models.SimpleContact
 import com.simplemobiletools.smsmessenger.adapters.ContactsAdapter
 import com.simplemobiletools.smsmessenger.databinding.ActivityConversationDetailsBinding
 import com.simplemobiletools.smsmessenger.dialogs.RenameConversationDialog
 import com.simplemobiletools.smsmessenger.extensions.*
-import com.simplemobiletools.smsmessenger.helpers.THREAD_ID
+import com.simplemobiletools.smsmessenger.helpers.*
 import com.simplemobiletools.smsmessenger.models.Conversation
+
 
 class ConversationDetailsActivity : SimpleActivity() {
 
@@ -60,6 +72,21 @@ class ConversationDetailsActivity : SimpleActivity() {
         binding.membersHeading.setTextColor(primaryColor)
     }
 
+    private fun setDetails(customNotification: Boolean, groupSendType: Int = SEND_TYPE_DEFAULT){
+        ensureBackgroundThread {
+            conversation = setConversationDetails(conversation!!, customNotification, groupSendType)
+            runOnUiThread{
+                binding.notificationsSwitch.isChecked = customNotification
+                binding.customizeNotifications.beVisibleIf(customNotification)
+                binding.groupSendMethod.text = when (groupSendType) {
+                    SEND_TYPE_MMS -> "MMS"
+                    SEND_TYPE_SMS -> "SMS"
+                    else -> "Default (${ if (config.sendGroupMessageMMS) "MMS" else "SMS" })"
+                }
+            }
+        }
+    }
+
     private fun setupTextViews() {
         binding.conversationName.apply {
             ResourcesCompat.getDrawable(resources, com.simplemobiletools.commons.R.drawable.ic_edit_vector, theme)?.apply {
@@ -76,6 +103,39 @@ class ConversationDetailsActivity : SimpleActivity() {
                     }
                 }
             }
+        }
+        binding.customizeNotifications.setOnClickListener{
+             val notificationHelper = NotificationHelper(this)
+             var channelid = notificationHelper.getConversationChannel(conversation!!)
+            val intent: Intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                .putExtra(Settings.EXTRA_CHANNEL_ID, channelid)
+            startActivity(intent)
+        }
+        binding.notificationsSwitch.beVisibleIf(isRPlus())
+        binding.customizeNotifications.beVisibleIf(isRPlus() && conversation!!.customNotification)
+        binding.notificationsSwitch.isChecked = conversation!!.customNotification
+        binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            conversation!!.customNotification = isChecked
+            setDetails(isChecked, conversation!!.groupSendType)
+            if (!isChecked) NotificationHelper(this@ConversationDetailsActivity).deleteChannel(conversation!!.threadId)
+        }
+
+        binding.groupSendMethodHolder.setOnClickListener {
+            val items = arrayListOf(
+                RadioItem(SEND_TYPE_DEFAULT, "Default (${ if (config.sendGroupMessageMMS) "MMS" else "SMS" })"),
+                RadioItem(SEND_TYPE_MMS, "MMS"),
+                RadioItem(SEND_TYPE_SMS, "SMS"),
+            )
+
+            RadioGroupDialog(this@ConversationDetailsActivity, items, conversation!!.groupSendType) {
+                setDetails(conversation!!.customNotification, it as Int)
+            }
+        }
+        binding.groupSendMethod.text = when (conversation?.groupSendType) {
+            SEND_TYPE_MMS -> "MMS"
+            SEND_TYPE_SMS -> "SMS"
+            else -> "Default (${ if (config.sendGroupMessageMMS) "MMS" else "SMS" })"
         }
     }
 

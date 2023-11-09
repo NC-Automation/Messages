@@ -3,6 +3,7 @@ package com.simplemobiletools.smsmessenger.helpers
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
 import android.content.Context
@@ -11,18 +12,25 @@ import android.graphics.Bitmap
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
+import androidx.core.content.ContextCompat.getSystemService
 import com.simplemobiletools.commons.extensions.getProperPrimaryColor
 import com.simplemobiletools.commons.extensions.notificationManager
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.helpers.isNougatPlus
-import com.simplemobiletools.commons.helpers.isOreoPlus
+import com.simplemobiletools.commons.helpers.*
 import com.simplemobiletools.smsmessenger.R
 import com.simplemobiletools.smsmessenger.activities.ThreadActivity
 import com.simplemobiletools.smsmessenger.extensions.config
+import com.simplemobiletools.smsmessenger.extensions.conversationsDB
+import com.simplemobiletools.smsmessenger.extensions.messagesDB
+import com.simplemobiletools.smsmessenger.extensions.subscriptionManagerCompat
 import com.simplemobiletools.smsmessenger.messaging.isShortCodeWithLetters
+import com.simplemobiletools.smsmessenger.models.Conversation
+import com.simplemobiletools.smsmessenger.models.SIMCard
 import com.simplemobiletools.smsmessenger.receivers.DeleteSmsReceiver
 import com.simplemobiletools.smsmessenger.receivers.DirectReplyReceiver
 import com.simplemobiletools.smsmessenger.receivers.MarkAsReadReceiver
@@ -45,99 +53,110 @@ class NotificationHelper(private val context: Context) {
         sender: String?,
         alertOnlyOnce: Boolean = false
     ) {
-        maybeCreateChannel(name = context.getString(R.string.channel_received_sms))
 
-        val notificationId = threadId.hashCode()
-        val contentIntent = Intent(context, ThreadActivity::class.java).apply {
-            putExtra(THREAD_ID, threadId)
-        }
-        val contentPendingIntent =
-            PendingIntent.getActivity(context, notificationId, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
-
-        val markAsReadIntent = Intent(context, MarkAsReadReceiver::class.java).apply {
-            action = MARK_AS_READ
-            putExtra(THREAD_ID, threadId)
-        }
-        val markAsReadPendingIntent =
-            PendingIntent.getBroadcast(context, notificationId, markAsReadIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
-
-        val deleteSmsIntent = Intent(context, DeleteSmsReceiver::class.java).apply {
-            putExtra(THREAD_ID, threadId)
-            putExtra(MESSAGE_ID, messageId)
-        }
-        val deleteSmsPendingIntent =
-            PendingIntent.getBroadcast(context, notificationId, deleteSmsIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
-
-        var replyAction: NotificationCompat.Action? = null
-        val isNoReplySms = isShortCodeWithLetters(address)
-        if (isNougatPlus() && !isNoReplySms) {
-            val replyLabel = context.getString(R.string.reply)
-            val remoteInput = RemoteInput.Builder(REPLY)
-                .setLabel(replyLabel)
-                .build()
-
-            val replyIntent = Intent(context, DirectReplyReceiver::class.java).apply {
+        ensureBackgroundThread {
+            var conversation: Conversation? = context.conversationsDB.getConversationWithThreadId(threadId)
+            var subscriptionId = context.messagesDB.getSubscriptionId(messageId)
+            createChannels()
+            var channelId = when {
+                subscriptionId != null -> "${NOTIFICATION_CHANNEL}_sim_${subscriptionId}"
+                else -> NOTIFICATION_CHANNEL
+            }
+            if (isRPlus() && conversation?.customNotification == true) {
+                channelId = getConversationChannel(conversation!!)
+            }
+            val notificationId = threadId.hashCode()
+            val contentIntent = Intent(context, ThreadActivity::class.java).apply {
                 putExtra(THREAD_ID, threadId)
-                putExtra(THREAD_NUMBER, address)
             }
+            val contentPendingIntent =
+                PendingIntent.getActivity(context, notificationId, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
-            val replyPendingIntent =
-                PendingIntent.getBroadcast(
-                    context.applicationContext,
-                    notificationId,
-                    replyIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-                )
-            replyAction = NotificationCompat.Action.Builder(R.drawable.ic_send_vector, replyLabel, replyPendingIntent)
-                .addRemoteInput(remoteInput)
-                .build()
-        }
+            val markAsReadIntent = Intent(context, MarkAsReadReceiver::class.java).apply {
+                action = MARK_AS_READ
+                putExtra(THREAD_ID, threadId)
+            }
+            val markAsReadPendingIntent =
+                PendingIntent.getBroadcast(context, notificationId, markAsReadIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
-        val largeIcon = bitmap ?: if (sender != null) {
-            SimpleContactsHelper(context).getContactLetterIcon(sender)
-        } else {
-            null
-        }
-        val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL).apply {
-            when (context.config.lockScreenVisibilitySetting) {
-                LOCK_SCREEN_SENDER_MESSAGE -> {
-                    setLargeIcon(largeIcon)
-                    setStyle(getMessagesStyle(address, body, notificationId, sender))
+            val deleteSmsIntent = Intent(context, DeleteSmsReceiver::class.java).apply {
+                putExtra(THREAD_ID, threadId)
+                putExtra(MESSAGE_ID, messageId)
+            }
+            val deleteSmsPendingIntent =
+                PendingIntent.getBroadcast(context, notificationId, deleteSmsIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+
+            var replyAction: NotificationCompat.Action? = null
+            val isNoReplySms = isShortCodeWithLetters(address)
+            if (isNougatPlus() && !isNoReplySms) {
+                val replyLabel = context.getString(R.string.reply)
+                val remoteInput = RemoteInput.Builder(REPLY)
+                    .setLabel(replyLabel)
+                    .build()
+
+                val replyIntent = Intent(context, DirectReplyReceiver::class.java).apply {
+                    putExtra(THREAD_ID, threadId)
+                    putExtra(THREAD_NUMBER, address)
                 }
 
-                LOCK_SCREEN_SENDER -> {
-                    setContentTitle(sender)
-                    setLargeIcon(largeIcon)
-                    val summaryText = context.getString(R.string.new_message)
-                    setStyle(NotificationCompat.BigTextStyle().setSummaryText(summaryText).bigText(body))
-                }
+                val replyPendingIntent =
+                    PendingIntent.getBroadcast(
+                        context.applicationContext,
+                        notificationId,
+                        replyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                    )
+                replyAction = NotificationCompat.Action.Builder(R.drawable.ic_send_vector, replyLabel, replyPendingIntent)
+                    .addRemoteInput(remoteInput)
+                    .build()
             }
 
-            color = context.getProperPrimaryColor()
-            setSmallIcon(R.drawable.ic_messenger)
-            setContentIntent(contentPendingIntent)
-            priority = NotificationCompat.PRIORITY_MAX
-            setDefaults(Notification.DEFAULT_LIGHTS)
-            setCategory(Notification.CATEGORY_MESSAGE)
-            setAutoCancel(true)
-            setOnlyAlertOnce(alertOnlyOnce)
-            setSound(soundUri, AudioManager.STREAM_NOTIFICATION)
-        }
+            val largeIcon = bitmap ?: if (sender != null) {
+                SimpleContactsHelper(context).getContactLetterIcon(sender)
+            } else {
+                null
+            }
 
-        if (replyAction != null && context.config.lockScreenVisibilitySetting == LOCK_SCREEN_SENDER_MESSAGE) {
-            builder.addAction(replyAction)
-        }
+            val builder = NotificationCompat.Builder(context, channelId).apply {
+                when (context.config.lockScreenVisibilitySetting) {
+                    LOCK_SCREEN_SENDER_MESSAGE -> {
+                        setLargeIcon(largeIcon)
+                        setStyle(getMessagesStyle(address, body, notificationId, sender))
+                    }
 
-        builder.addAction(com.simplemobiletools.commons.R.drawable.ic_check_vector, context.getString(R.string.mark_as_read), markAsReadPendingIntent)
-            .setChannelId(NOTIFICATION_CHANNEL)
-        if (isNoReplySms) {
-            builder.addAction(
-                com.simplemobiletools.commons.R.drawable.ic_delete_vector,
-                context.getString(com.simplemobiletools.commons.R.string.delete),
-                deleteSmsPendingIntent
-            ).setChannelId(NOTIFICATION_CHANNEL)
+                    LOCK_SCREEN_SENDER -> {
+                        setContentTitle(sender)
+                        setLargeIcon(largeIcon)
+                        val summaryText = context.getString(R.string.new_message)
+                        setStyle(NotificationCompat.BigTextStyle().setSummaryText(summaryText).bigText(body))
+                    }
+                }
+                color = context.getProperPrimaryColor()
+                setSmallIcon(R.drawable.ic_messenger)
+                setContentIntent(contentPendingIntent)
+                priority = NotificationCompat.PRIORITY_MAX
+                setDefaults(Notification.DEFAULT_LIGHTS)
+                setCategory(Notification.CATEGORY_MESSAGE)
+                setAutoCancel(true)
+                setOnlyAlertOnce(alertOnlyOnce)
+                setSound(soundUri, AudioManager.STREAM_NOTIFICATION)
+            }
+
+            if (replyAction != null && context.config.lockScreenVisibilitySetting == LOCK_SCREEN_SENDER_MESSAGE) {
+                builder.addAction(replyAction)
+            }
+
+            builder.addAction(com.simplemobiletools.commons.R.drawable.ic_check_vector, context.getString(R.string.mark_as_read), markAsReadPendingIntent)
+                .setChannelId(channelId)
+            if (isNoReplySms) {
+                builder.addAction(
+                    com.simplemobiletools.commons.R.drawable.ic_delete_vector,
+                    context.getString(com.simplemobiletools.commons.R.string.delete),
+                    deleteSmsPendingIntent
+                ).setChannelId(channelId)
+            }
+            notificationManager.notify(notificationId, builder.build())
         }
-        notificationManager.notify(notificationId, builder.build())
     }
 
     @SuppressLint("NewApi")
@@ -169,7 +188,37 @@ class NotificationHelper(private val context: Context) {
         notificationManager.notify(notificationId, builder.build())
     }
 
-    private fun maybeCreateChannel(name: String) {
+    fun getConversationChannel(conversation:Conversation): String {
+        createChannels()
+        if (isRPlus()) {
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                .build()
+
+            val importance = IMPORTANCE_HIGH
+            val id = "${NOTIFICATION_CHANNEL}_${conversation.threadId}"
+            NotificationChannel(id, "From (${conversation.title})", importance).apply {
+                setBypassDnd(false)
+                enableLights(true)
+                setSound(soundUri, audioAttributes)
+                enableVibration(true)
+                notificationManager.createNotificationChannel(this)
+            }
+            return id
+        }
+        return NOTIFICATION_CHANNEL
+    }
+
+    fun deleteChannel(id:Long){
+        if (isOreoPlus()) {
+            try {
+                notificationManager.deleteNotificationChannel("${NOTIFICATION_CHANNEL}_${id}")
+            } catch (e:Exception) {}
+        }
+    }
+    private fun maybeCreateChannel(name: String, conversation:Conversation? = null) {
         if (isOreoPlus()) {
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
@@ -183,12 +232,67 @@ class NotificationHelper(private val context: Context) {
                 setBypassDnd(false)
                 enableLights(true)
                 setSound(soundUri, audioAttributes)
-                enableVibration(true)
                 notificationManager.createNotificationChannel(this)
             }
         }
     }
 
+    fun createChannels() {
+        if (isOreoPlus()) {
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                .build()
+
+            var id = NOTIFICATION_CHANNEL
+            val importance = IMPORTANCE_HIGH
+            //at some point it would be nice to support a separate channel for foreground syncs
+//            NotificationChannel(id + "_foreground", "Foreground syncs", importance).apply {
+//                setBypassDnd(false)
+//                enableLights(true)
+//                setSound(null, audioAttributes)
+//                enableVibration(false)
+//                notificationManager.createNotificationChannel(this)
+//            }
+            NotificationChannel(id, "General notifications", importance).apply {
+                setBypassDnd(false)
+                enableLights(true)
+                setSound(soundUri, audioAttributes)
+                enableVibration(true)
+                notificationManager.createNotificationChannel(this)
+            }
+            getAvailableSIMs().forEach {sim ->
+                NotificationChannel("${id}_sim_${sim.subscriptionId}", "Messages Sim ${sim.label}", importance).apply {
+                    setBypassDnd(false)
+                    enableLights(true)
+                    setSound(soundUri, audioAttributes)
+                    enableVibration(true)
+                    notificationManager.createNotificationChannel(this)
+
+                }
+            }
+        }
+    }
+
+    val availableSIMCards = ArrayList<SIMCard>()
+    @SuppressLint("MissingPermission")
+    fun getAvailableSIMs() : List<SIMCard> {
+        if (availableSIMCards.size > 0) return  availableSIMCards
+        val availableSIMs = context.subscriptionManagerCompat().activeSubscriptionInfoList ?: return ArrayList<SIMCard>()
+        var sims = ArrayList<SIMCard>()
+        if (availableSIMs.size > 0) {
+            availableSIMs.forEachIndexed { index, subscriptionInfo ->
+                var label = subscriptionInfo.displayName?.toString() ?: ""
+                if (subscriptionInfo.number?.isNotEmpty() == true) {
+                    label += " (${subscriptionInfo.number})"
+                }
+                val simCard = SIMCard(index + 1, subscriptionInfo.subscriptionId, label)
+                sims.add(simCard)
+            }
+        }
+        return sims
+    }
     private fun getMessagesStyle(address: String, body: String, notificationId: Int, name: String?): NotificationCompat.MessagingStyle {
         val sender = if (name != null) {
             Person.Builder()

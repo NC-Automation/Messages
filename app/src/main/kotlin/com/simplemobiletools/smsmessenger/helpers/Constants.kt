@@ -95,6 +95,10 @@ const val CAPTURE_AUDIO_INTENT = 46
 const val PICK_DOCUMENT_INTENT = 47
 const val PICK_CONTACT_INTENT = 48
 
+//group message send tye
+const val SEND_TYPE_DEFAULT = 0
+const val SEND_TYPE_SMS = 1
+const val SEND_TYPE_MMS = 2
 fun refreshMessages() {
     EventBus.getDefault().post(Events.RefreshMessages())
 }

@@ -10,6 +10,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -1115,7 +1116,7 @@ fun Context.insertOrUpdateConversation(
         } else {
             conversation.title
         }
-        conversation.copy(title = title, usesCustomTitle = usesCustomTitle)
+        conversation.copy(title = title, usesCustomTitle = usesCustomTitle, customNotification = cachedConv.customNotification, groupSendType = cachedConv.groupSendType)
     } else {
         conversation
     }
@@ -1131,7 +1132,15 @@ fun Context.renameConversation(conversation: Conversation, newTitle: String): Co
     }
     return updatedConv
 }
-
+fun Context.setConversationDetails(conversation: Conversation, customNotification: Boolean, groupSendType: Int = SEND_TYPE_DEFAULT): Conversation {
+    val updatedConv = conversation.copy(customNotification = customNotification, groupSendType = groupSendType)
+    try {
+        conversationsDB.insertOrUpdate(updatedConv)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return updatedConv
+}
 fun Context.createTemporaryThread(message: Message, threadId: Long = generateRandomId(), cachedConv: Conversation?) {
     val simpleContactHelper = SimpleContactsHelper(this)
     val addresses = message.participants.getAddresses()
@@ -1141,6 +1150,8 @@ fun Context.createTemporaryThread(message: Message, threadId: Long = generateRan
     } else {
         message.participants.getThreadTitle()
     }
+    val customNotification = cachedConv?.customNotification?:false
+    val groupSendType = cachedConv?.groupSendType?: SEND_TYPE_DEFAULT
 
     val conversation = Conversation(
         threadId = threadId,
@@ -1153,7 +1164,9 @@ fun Context.createTemporaryThread(message: Message, threadId: Long = generateRan
         phoneNumber = addresses.first(),
         isScheduled = true,
         usesCustomTitle = cachedConv?.usesCustomTitle == true,
-        isArchived = false
+        isArchived = false,
+        customNotification = customNotification,
+        groupSendType = groupSendType
     )
     try {
         conversationsDB.insertOrUpdate(conversation)

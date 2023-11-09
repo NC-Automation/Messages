@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 8,
-    "identityHash": "23811e41b338a810cf5df26a5dff67a5",
+    "identityHash": "6c2981c0682b38016d08e57b0bff1b6a",
     "entities": [
       {
         "tableName": "conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thread_id` INTEGER NOT NULL, `snippet` TEXT NOT NULL, `date` INTEGER NOT NULL, `read` INTEGER NOT NULL, `title` TEXT NOT NULL, `photo_uri` TEXT NOT NULL, `is_group_conversation` INTEGER NOT NULL, `phone_number` TEXT NOT NULL, `is_scheduled` INTEGER NOT NULL, `uses_custom_title` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY(`thread_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thread_id` INTEGER NOT NULL, `snippet` TEXT NOT NULL, `date` INTEGER NOT NULL, `read` INTEGER NOT NULL, `title` TEXT NOT NULL, `photo_uri` TEXT NOT NULL, `is_group_conversation` INTEGER NOT NULL, `phone_number` TEXT NOT NULL, `is_scheduled` INTEGER NOT NULL, `uses_custom_title` INTEGER NOT NULL, `archived` INTEGER NOT NULL, `custom_notification` INTEGER NOT NULL, `group_send_type` INTEGER NOT NULL, PRIMARY KEY(`thread_id`))",
         "fields": [
           {
             "fieldPath": "threadId",
@@ -71,6 +71,18 @@
           {
             "fieldPath": "isArchived",
             "columnName": "archived",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "customNotification",
+            "columnName": "custom_notification",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupSendType",
+            "columnName": "group_send_type",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -336,7 +348,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '23811e41b338a810cf5df26a5dff67a5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6c2981c0682b38016d08e57b0bff1b6a')"
     ]
   }
 }

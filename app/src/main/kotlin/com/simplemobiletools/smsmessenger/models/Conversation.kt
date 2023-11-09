@@ -1,9 +1,13 @@
 package com.simplemobiletools.smsmessenger.models
 
+import android.net.Uri
+import android.provider.Settings
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.simplemobiletools.smsmessenger.helpers.*
+
 
 @Entity(tableName = "conversations", indices = [(Index(value = ["thread_id"], unique = true))])
 data class Conversation(
@@ -17,8 +21,10 @@ data class Conversation(
     @ColumnInfo(name = "phone_number") var phoneNumber: String,
     @ColumnInfo(name = "is_scheduled") var isScheduled: Boolean = false,
     @ColumnInfo(name = "uses_custom_title") var usesCustomTitle: Boolean = false,
-    @ColumnInfo(name = "archived") var isArchived: Boolean = false
-) {
+    @ColumnInfo(name = "archived") var isArchived: Boolean = false,
+    @ColumnInfo(name = "custom_notification") var customNotification: Boolean = false,
+    @ColumnInfo(name = "group_send_type") var groupSendType: Int = SEND_TYPE_DEFAULT,
+    ) {
 
     companion object {
         fun areItemsTheSame(old: Conversation, new: Conversation): Boolean {

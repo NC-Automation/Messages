@@ -87,4 +87,6 @@ interface MessagesDao {
 
     @Query("DELETE FROM messages")
     fun deleteAll()
+    @Query("SELECT subscription_id FROM messages WHERE id = :id")
+    fun getSubscriptionId(id: Long) :Int
 }

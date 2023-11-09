@@ -194,6 +194,7 @@ class ThreadActivity : SimpleActivity() {
                 conversation = newConv
                 runOnUiThread {
                     setupThreadTitle()
+                    updateMessageType()
                 }
             }
         }
@@ -1106,6 +1107,7 @@ class ThreadActivity : SimpleActivity() {
                     val a = e
                 }
             }
+            finishActMode()
         }
     }
 
@@ -1702,7 +1704,7 @@ class ThreadActivity : SimpleActivity() {
     }
 
     private fun isMmsMessage(text: String): Boolean {
-        val isGroupMms = participants.size > 1 && config.sendGroupMessageMMS
+        val isGroupMms = participants.size > 1 && (config.sendGroupMessageMMS || conversation?.groupSendType == SEND_TYPE_MMS) && conversation?.groupSendType != SEND_TYPE_SMS
         val isLongMmsMessage = isLongMmsMessage(text)
         return getAttachmentSelections().isNotEmpty() || isGroupMms || isLongMmsMessage
     }
@@ -1710,11 +1712,11 @@ class ThreadActivity : SimpleActivity() {
     private fun updateMessageType() {
         val text = binding.messageHolder.threadTypeMessage.text.toString()
         val stringId = if (isMmsMessage(text)) {
-            R.string.mms
+            "MMS"
         } else {
-            R.string.sms
+            "SMS"
         }
-        binding.messageHolder.threadSendMessage.setText(stringId)
+        binding.messageHolder.threadSendMessage.text = stringId
     }
 
     private fun showScheduledMessageInfo(message: Message) {

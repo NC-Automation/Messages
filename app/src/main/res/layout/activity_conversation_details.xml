@@ -54,6 +54,82 @@
             layout="@layout/divider" />
 
         <TextView
+            android:id="@+id/notification_options_heading"
+            style="@style/MaterialSectionLabelStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_margin"
+            android:layout_marginEnd="@dimen/activity_margin"
+            android:text="General Options" />
+
+
+        <Switch
+            android:id="@+id/notifications_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_margin"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawablePadding="@dimen/bigger_margin"
+            android:ellipsize="end"
+            android:focusable="true"
+            android:maxLines="1"
+            android:paddingStart="@dimen/activity_margin"
+            android:paddingTop="@dimen/bigger_margin"
+            android:paddingEnd="@dimen/activity_margin"
+            android:paddingBottom="@dimen/bigger_margin"
+            android:textSize="@dimen/bigger_text_size"
+            android:checked="false"
+            android:text="Use custom notification" />
+
+        <com.simplemobiletools.commons.views.MyTextView
+            android:id="@+id/customize_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_margin"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawablePadding="@dimen/bigger_margin"
+            android:ellipsize="end"
+            android:focusable="true"
+            android:maxLines="1"
+            android:paddingStart="@dimen/activity_margin"
+            android:paddingTop="@dimen/bigger_margin"
+            android:paddingEnd="@dimen/activity_margin"
+            android:paddingBottom="@dimen/bigger_margin"
+            android:textSize="@dimen/bigger_text_size"
+            android:visibility="gone"
+            android:text="Notification settings" />
+        <RelativeLayout
+            android:id="@+id/group_send_method_holder"
+            style="@style/SettingsHolderTextViewStyle"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.simplemobiletools.commons.views.MyTextView
+                android:id="@+id/group_send_method_label"
+                style="@style/SettingsTextLabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send group messages as" />
+
+            <com.simplemobiletools.commons.views.MyTextView
+                android:id="@+id/group_send_method"
+                style="@style/SettingsTextValueStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/group_send_method_label"
+                tools:text="Default (MMS)" />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/settings_notifications_divider"
+            layout="@layout/divider" />
+
+        <TextView
             android:id="@+id/members_heading"
             style="@style/MaterialSectionLabelStyle"
             android:layout_width="match_parent"

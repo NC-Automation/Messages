@@ -152,6 +152,7 @@ class SettingsActivity : SimpleActivity() {
     private fun setupCustomizeNotifications() = binding.apply {
         settingsCustomizeNotificationsHolder.beVisibleIf(isOreoPlus())
         settingsCustomizeNotificationsHolder.setOnClickListener {
+            NotificationHelper(this@SettingsActivity).createChannels()
             launchCustomizeNotificationsIntent()
         }
     }

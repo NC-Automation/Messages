@@ -42,6 +42,7 @@ abstract class MessagesDatabase : RoomDatabase() {
                             .addMigrations(MIGRATION_5_6)
                             .addMigrations(MIGRATION_6_7)
                             .addMigrations(MIGRATION_7_8)
+                            .addMigrations(MIGRATION_8_9)
                             .build()
                     }
                 }
@@ -120,6 +121,15 @@ abstract class MessagesDatabase : RoomDatabase() {
                     execSQL("ALTER TABLE conversations ADD COLUMN archived INTEGER NOT NULL DEFAULT 0")
                     execSQL("CREATE TABLE IF NOT EXISTS `recycle_bin_messages` (`id` INTEGER NOT NULL PRIMARY KEY, `deleted_ts` INTEGER NOT NULL)")
                     execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_recycle_bin_messages_id` ON `recycle_bin_messages` (`id`)")
+                }
+            }
+        }
+        private val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.apply {
+                    execSQL("ALTER TABLE conversations ADD COLUMN vibrate INTEGER NOT NULL DEFAULT 1")
+                    execSQL("ALTER TABLE conversations ADD COLUMN notifications INTEGER NOT NULL DEFAULT 1")
+                    execSQL("ALTER TABLE conversations ADD COLUMN sound TEXT")
                 }
             }
         }
