@@ -146,6 +146,8 @@ class ConversationDetailsActivity : SimpleActivity() {
             getContactFromAddress(address) { simpleContact ->
                 if (simpleContact != null) {
                     startContactDetailsIntent(simpleContact)
+                } else {
+                    dialNumber(address)
                 }
             }
         }
