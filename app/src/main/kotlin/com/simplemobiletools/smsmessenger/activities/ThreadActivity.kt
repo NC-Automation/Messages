@@ -77,6 +77,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.log
 
 class ThreadActivity : SimpleActivity() {
     private val MIN_DATE_TIME_DIFF_SECS = 300
@@ -497,9 +498,9 @@ class ThreadActivity : SimpleActivity() {
                 addSelectedContact(contact)
             }
         }
-        if (allMessagesFetched) {
+        if (!allMessagesFetched) {
             ensureBackgroundThread {
-                fetchNextMessages()
+                fetchNextMessages(false)
             }
         }
     }
@@ -580,14 +581,15 @@ class ThreadActivity : SimpleActivity() {
         }
     }
 
-    private fun fetchNextMessages() {
+    private fun fetchNextMessages(updatePosition: Boolean = true) {
         if (messages.isEmpty() || allMessagesFetched || loadingOlderMessages) {
             if (allMessagesFetched) {
                 getOrCreateThreadAdapter().apply {
                     val newList = currentList.toMutableList().apply {
                         removeAll { it is ThreadLoading }
                     }
-                    updateMessages(newMessages = newList as ArrayList<ThreadItem>, scrollPosition = 0)
+                    val scrollPosition = if (updatePosition) -1 else 0
+                    updateMessages(newMessages = newList as ArrayList<ThreadItem>, scrollPosition = scrollPosition)
                 }
             }
             return
@@ -613,11 +615,14 @@ class ThreadActivity : SimpleActivity() {
 
             runOnUiThread {
                 loadingOlderMessages = false
-                val itemAtRefreshIndex = threadItems.indexOfFirst { it == firstItem }
+                var itemAtRefreshIndex = threadItems.indexOfFirst { it == firstItem }
+                Log.d("tag", "got ${threadItems.count()} items (${updatePosition}).")
+                if (!updatePosition)  itemAtRefreshIndex = -1
                 getOrCreateThreadAdapter().updateMessages(threadItems, itemAtRefreshIndex)
+                if (!allMessagesFetched && isActivityVisible) fetchNextMessages(false)
             }
+
         }
-        fetchNextMessages()
     }
 
     private fun loadConversation() {
@@ -1275,6 +1280,7 @@ class ThreadActivity : SimpleActivity() {
             val threadLoading = ThreadLoading(generateRandomId())
             items.add(0, threadLoading)
         }
+        if (!allMessagesFetched) ensureBackgroundThread { fetchNextMessages(false) }
 
         return items
     }
