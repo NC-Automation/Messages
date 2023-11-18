@@ -683,7 +683,7 @@ class MainActivity : SimpleActivity() {
         arrayListOf<Release>().apply {
             add(Release(48, R.string.release_48))
             add(Release(62, R.string.release_62))
-            checkWhatsNew(this, BuildConfig.VERSION_CODE)
+            //checkWhatsNew(this, BuildConfig.VERSION_CODE)
         }
     }
 }

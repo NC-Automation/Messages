@@ -1,7 +1,7 @@
 package com.ncautomation.messages.dialogs
 
 import androidx.appcompat.app.AlertDialog
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
+import com.ncautomation.messages.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.extensions.getAlertDialogBuilder
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.showKeyboard

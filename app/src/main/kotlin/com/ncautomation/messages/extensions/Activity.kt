@@ -5,11 +5,12 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
+import android.widget.Toast
+import com.simplemobiletools.commons.R
+import com.ncautomation.messages.activities.BaseSimpleActivity
+import com.simplemobiletools.commons.dialogs.WritePermissionDialog
 import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.CONTACT_ID
-import com.simplemobiletools.commons.helpers.IS_PRIVATE
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.simplemobiletools.commons.helpers.*
 import com.simplemobiletools.commons.models.SimpleContact
 import java.util.Locale
 

@@ -1,7 +1,7 @@
 package com.ncautomation.messages.activities
 
 import android.os.Bundle
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
+import com.ncautomation.messages.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.extensions.beVisibleIf
 import com.simplemobiletools.commons.extensions.getProperPrimaryColor
 import com.simplemobiletools.commons.extensions.underlineText

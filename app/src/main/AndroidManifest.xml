@@ -37,10 +37,10 @@
         android:allowBackup="true"
         android:largeHeap="true"
         android:appCategory="productivity"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_indigo"
         android:label="@string/app_launcher_name"
         android:localeConfig="@xml/locale_config"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_indigo"
         android:theme="@style/AppTheme">
 
         <activity

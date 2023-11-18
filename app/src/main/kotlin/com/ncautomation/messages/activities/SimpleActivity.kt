@@ -1,6 +1,5 @@
 package com.ncautomation.messages.activities
 
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.ncautomation.messages.R
 
 open class SimpleActivity : BaseSimpleActivity() {

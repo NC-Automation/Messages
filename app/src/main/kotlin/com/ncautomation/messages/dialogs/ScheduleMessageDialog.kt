@@ -8,7 +8,7 @@ import android.text.format.DateFormat
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
+import com.ncautomation.messages.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.extensions.*
 import com.ncautomation.messages.R
 import com.ncautomation.messages.databinding.ScheduleMessageDialogBinding

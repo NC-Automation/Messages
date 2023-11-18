@@ -65,6 +65,7 @@ import com.ncautomation.messages.dialogs.RenameConversationDialog
 import com.ncautomation.messages.dialogs.ScheduleMessageDialog
 import com.ncautomation.messages.extensions.*
 import com.ncautomation.messages.helpers.*
+import com.ncautomation.messages.helpers.VcfExporter
 import com.ncautomation.messages.messaging.*
 import com.ncautomation.messages.models.*
 import com.ncautomation.messages.models.ThreadItem.*
