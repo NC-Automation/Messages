@@ -80,7 +80,7 @@
                 app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="0dp"
                 android:layout_marginVertical="@dimen/tiny_margin"
-                android:autoLink="email|web"
+                android:autoLink="all"
                 android:background="@drawable/item_received_background"
                 android:drawablePadding="4dp"
                 android:paddingHorizontal="@dimen/normal_margin"
