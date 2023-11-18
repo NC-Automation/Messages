@@ -31,5 +31,5 @@
 
 # Gson
 -keep class com.simplemobiletools.commons.models.SimpleContact { *; }
--keep class com.simplemobiletools.smsmessenger.models.Attachment { *; }
--keep class com.simplemobiletools.smsmessenger.models.MessageAttachment { *; }
+-keep class com.ncautomation.messages.models.Attachment { *; }
+-keep class com.ncautomation.messages.models.MessageAttachment { *; }

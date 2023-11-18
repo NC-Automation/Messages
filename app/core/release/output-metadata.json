@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.simplemobiletools.smsmessenger",
+  "applicationId": "com.ncautomation.messages",
   "variantName": "coreRelease",
   "elements": [
     {

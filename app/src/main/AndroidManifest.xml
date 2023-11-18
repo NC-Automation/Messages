@@ -223,7 +223,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.simplemobiletools.smsmessenger.action.mark_as_read" />
+                <action android:name="com.ncautomation.messages.action.mark_as_read" />
             </intent-filter>
         </receiver>
 
@@ -232,7 +232,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.simplemobiletools.smsmessenger.action.reply" />
+                <action android:name="com.ncautomation.messages.action.reply" />
             </intent-filter>
         </receiver>
 
@@ -241,7 +241,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.simplemobiletools.smsmessenger.action.delete" />
+                <action android:name="com.ncautomation.messages.action.delete" />
             </intent-filter>
         </receiver>
 
