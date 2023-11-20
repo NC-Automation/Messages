@@ -11,7 +11,7 @@ plugins {
 }
 
 base {
-    archivesName.set("sms-messenger")
+    archivesName.set("messages")
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")

@@ -317,7 +317,7 @@
 
         <activity-alias
             android:name=".activities.SplashActivity.Indigo"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_indigo"
             android:roundIcon="@mipmap/ic_launcher_indigo"
@@ -457,7 +457,7 @@
 
         <activity-alias
             android:name=".activities.SplashActivity.Orange"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher"
