@@ -6,11 +6,11 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.simplemobiletools.commons.databinding.ItemContactWithNumberBinding
-import com.simplemobiletools.commons.extensions.getTextSize
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.models.SimpleContact
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.databinding.ItemContactWithNumberBinding
+import com.ncautomation.commons.extensions.getTextSize
+import com.ncautomation.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.models.SimpleContact
+import com.ncautomation.commons.views.MyRecyclerView
 import com.ncautomation.messages.activities.SimpleActivity
 
 class ContactsAdapter(

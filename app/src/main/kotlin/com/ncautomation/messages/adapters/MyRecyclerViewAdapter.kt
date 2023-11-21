@@ -7,11 +7,11 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.simplemobiletools.commons.R
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.interfaces.MyActionModeCallback
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.R
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.interfaces.MyActionModeCallback
+import com.ncautomation.commons.views.MyRecyclerView
 import kotlin.math.max
 import kotlin.math.min
 

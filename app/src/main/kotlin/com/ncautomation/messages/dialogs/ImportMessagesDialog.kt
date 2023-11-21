@@ -2,8 +2,8 @@ package com.ncautomation.messages.dialogs
 
 import android.net.Uri
 import androidx.appcompat.app.AlertDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.R
 import com.ncautomation.messages.activities.SimpleActivity
 import com.ncautomation.messages.databinding.DialogImportMessagesBinding
@@ -31,8 +31,8 @@ class ImportMessagesDialog(
         }
         var dlg = this
         activity.getAlertDialogBuilder()
-            .setPositiveButton(com.simplemobiletools.commons.R.string.ok, null)
-            .setNegativeButton(com.simplemobiletools.commons.R.string.cancel, null)
+            .setPositiveButton(com.ncautomation.commons.R.string.ok, null)
+            .setNegativeButton(com.ncautomation.commons.R.string.cancel, null)
             .apply {
                 activity.setupDialogStuff(binding.root, this, R.string.import_messages) { alertDialog ->
                     importer = MessagesImporter(activity, dlg)
@@ -102,10 +102,10 @@ class ImportMessagesDialog(
     private fun handleParseResult(result: ImportResult) {
         activity.toast(
             when (result) {
-                ImportResult.IMPORT_OK -> com.simplemobiletools.commons.R.string.importing_successful
-                ImportResult.IMPORT_PARTIAL -> com.simplemobiletools.commons.R.string.importing_some_entries_failed
-                ImportResult.IMPORT_FAIL -> com.simplemobiletools.commons.R.string.importing_failed
-                else -> com.simplemobiletools.commons.R.string.no_items_found
+                ImportResult.IMPORT_OK -> com.ncautomation.commons.R.string.importing_successful
+                ImportResult.IMPORT_PARTIAL -> com.ncautomation.commons.R.string.importing_some_entries_failed
+                ImportResult.IMPORT_FAIL -> com.ncautomation.commons.R.string.importing_failed
+                else -> com.ncautomation.commons.R.string.no_items_found
             }
         )
     }

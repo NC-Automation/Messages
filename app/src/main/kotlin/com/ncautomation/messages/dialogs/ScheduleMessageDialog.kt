@@ -8,8 +8,8 @@ import android.text.format.DateFormat
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.extensions.*
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.extensions.*
 import com.ncautomation.messages.R
 import com.ncautomation.messages.databinding.ScheduleMessageDialogBinding
 import com.ncautomation.messages.extensions.config
@@ -66,8 +66,8 @@ class ScheduleMessageDialog(
         }
 
         activity.getAlertDialogBuilder()
-            .setPositiveButton(com.simplemobiletools.commons.R.string.ok, null)
-            .setNegativeButton(com.simplemobiletools.commons.R.string.cancel, null)
+            .setPositiveButton(com.ncautomation.commons.R.string.ok, null)
+            .setNegativeButton(com.ncautomation.commons.R.string.cancel, null)
             .apply {
                 previewShown = true
                 activity.setupDialogStuff(binding.root, this, R.string.schedule_message) { dialog ->
@@ -99,7 +99,7 @@ class ScheduleMessageDialog(
             datePicker.minDate = System.currentTimeMillis()
             show()
             getButton(AlertDialog.BUTTON_NEGATIVE).apply {
-                text = activity.getString(com.simplemobiletools.commons.R.string.cancel)
+                text = activity.getString(com.ncautomation.commons.R.string.cancel)
                 setOnClickListener {
                     dismiss()
                 }
@@ -136,7 +136,7 @@ class ScheduleMessageDialog(
             ).apply {
                 show()
                 getButton(AlertDialog.BUTTON_NEGATIVE).apply {
-                    text = activity.getString(com.simplemobiletools.commons.R.string.cancel)
+                    text = activity.getString(com.ncautomation.commons.R.string.cancel)
                     setOnClickListener {
                         dismiss()
                     }

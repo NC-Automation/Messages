@@ -1,8 +1,8 @@
 package com.ncautomation.messages.dialogs
 
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.extensions.getAlertDialogBuilder
-import com.simplemobiletools.commons.extensions.setupDialogStuff
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.extensions.getAlertDialogBuilder
+import com.ncautomation.commons.extensions.setupDialogStuff
 import com.ncautomation.messages.databinding.DialogSelectTextBinding
 
 // helper dialog for selecting just a part of a message, not copying the whole into clipboard
@@ -13,7 +13,7 @@ class SelectTextDialog(val activity: BaseSimpleActivity, val text: String) {
         }
 
         activity.getAlertDialogBuilder()
-            .setPositiveButton(com.simplemobiletools.commons.R.string.ok) { _, _ -> { } }
+            .setPositiveButton(com.ncautomation.commons.R.string.ok) { _, _ -> { } }
             .apply {
                 activity.setupDialogStuff(binding.root, this)
             }

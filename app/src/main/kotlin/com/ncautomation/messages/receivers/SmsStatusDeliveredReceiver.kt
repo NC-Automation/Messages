@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Telephony.Sms
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.extensions.messagesDB
 import com.ncautomation.messages.extensions.messagingUtils
 import com.ncautomation.messages.helpers.refreshMessages

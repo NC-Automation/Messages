@@ -6,8 +6,8 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
-import com.simplemobiletools.commons.extensions.showErrorToast
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.showErrorToast
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.extensions.conversationsDB
 import com.ncautomation.messages.extensions.deleteScheduledMessage
 import com.ncautomation.messages.extensions.getAddresses
@@ -55,7 +55,7 @@ class ScheduledMessageReceiver : BroadcastReceiver() {
         } catch (e: Exception) {
             context.showErrorToast(e)
         } catch (e: Error) {
-            context.showErrorToast(e.localizedMessage ?: context.getString(com.simplemobiletools.commons.R.string.unknown_error_occurred))
+            context.showErrorToast(e.localizedMessage ?: context.getString(com.ncautomation.commons.R.string.unknown_error_occurred))
         }
     }
 }

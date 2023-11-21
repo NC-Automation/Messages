@@ -2,14 +2,14 @@ package com.ncautomation.messages.dialogs
 
 import android.view.*
 import android.widget.PopupMenu
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.adapters.MyRecyclerViewAdapter
-import com.simplemobiletools.commons.extensions.copyToClipboard
-import com.simplemobiletools.commons.extensions.getPopupMenuTheme
-import com.simplemobiletools.commons.extensions.getProperTextColor
-import com.simplemobiletools.commons.extensions.setupViewBackground
-import com.simplemobiletools.commons.interfaces.RefreshRecyclerViewListener
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.adapters.MyRecyclerViewAdapter
+import com.ncautomation.commons.extensions.copyToClipboard
+import com.ncautomation.commons.extensions.getPopupMenuTheme
+import com.ncautomation.commons.extensions.getProperTextColor
+import com.ncautomation.commons.extensions.setupViewBackground
+import com.ncautomation.commons.interfaces.RefreshRecyclerViewListener
+import com.ncautomation.commons.views.MyRecyclerView
 import com.ncautomation.messages.R
 import com.ncautomation.messages.databinding.ItemManageBlockedKeywordBinding
 import com.ncautomation.messages.extensions.config

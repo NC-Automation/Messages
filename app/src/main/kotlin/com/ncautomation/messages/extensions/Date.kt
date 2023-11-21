@@ -2,7 +2,7 @@ package com.ncautomation.messages.extensions
 
 import android.text.format.DateFormat
 import android.text.format.DateUtils
-import com.simplemobiletools.commons.extensions.isThisYear
+import com.ncautomation.commons.extensions.isThisYear
 import java.util.*
 
 fun Date.format(pattern: String): String {

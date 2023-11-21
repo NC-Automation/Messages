@@ -6,9 +6,9 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
-import com.simplemobiletools.commons.extensions.getCompressionFormat
-import com.simplemobiletools.commons.extensions.getMyFileUri
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.getCompressionFormat
+import com.ncautomation.commons.extensions.getMyFileUri
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.extensions.extension
 import com.ncautomation.messages.extensions.getExtensionFromMimeType
 import com.ncautomation.messages.extensions.getFileSizeFromUri

@@ -6,11 +6,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
-import com.simplemobiletools.commons.activities.ManageBlockedNumbersActivity
-import com.simplemobiletools.commons.dialogs.*
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
-import com.simplemobiletools.commons.models.RadioItem
+import com.ncautomation.commons.activities.ManageBlockedNumbersActivity
+import com.ncautomation.commons.dialogs.*
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.*
+import com.ncautomation.commons.models.RadioItem
 import com.ncautomation.messages.R
 import com.ncautomation.messages.databinding.ActivitySettingsBinding
 import com.ncautomation.messages.dialogs.ExportMessagesDialog
@@ -101,7 +101,7 @@ class SettingsActivity : SimpleActivity() {
 
     private val saveDocument = registerForActivityResult(ActivityResultContracts.CreateDocument(messagesFileType)) { uri ->
         if (uri != null) {
-            toast(com.simplemobiletools.commons.R.string.exporting)
+            toast(com.ncautomation.commons.R.string.exporting)
             exportMessages(uri)
         }
     }
@@ -176,7 +176,7 @@ class SettingsActivity : SimpleActivity() {
     // support for device-wise blocking came on Android 7, rely only on that
     @TargetApi(Build.VERSION_CODES.N)
     private fun setupManageBlockedNumbers() = binding.apply {
-        settingsManageBlockedNumbers.text = getString(com.simplemobiletools.commons.R.string.manage_blocked_numbers)
+        settingsManageBlockedNumbers.text = getString(com.ncautomation.commons.R.string.manage_blocked_numbers)
         settingsManageBlockedNumbersHolder.beVisibleIf(isNougatPlus())
 
         settingsManageBlockedNumbersHolder.setOnClickListener {
@@ -216,10 +216,10 @@ class SettingsActivity : SimpleActivity() {
         settingsFontSize.text = getFontSizeText()
         settingsFontSizeHolder.setOnClickListener {
             val items = arrayListOf(
-                RadioItem(FONT_SIZE_SMALL, getString(com.simplemobiletools.commons.R.string.small)),
-                RadioItem(FONT_SIZE_MEDIUM, getString(com.simplemobiletools.commons.R.string.medium)),
-                RadioItem(FONT_SIZE_LARGE, getString(com.simplemobiletools.commons.R.string.large)),
-                RadioItem(FONT_SIZE_EXTRA_LARGE, getString(com.simplemobiletools.commons.R.string.extra_large))
+                RadioItem(FONT_SIZE_SMALL, getString(com.ncautomation.commons.R.string.small)),
+                RadioItem(FONT_SIZE_MEDIUM, getString(com.ncautomation.commons.R.string.medium)),
+                RadioItem(FONT_SIZE_LARGE, getString(com.ncautomation.commons.R.string.large)),
+                RadioItem(FONT_SIZE_EXTRA_LARGE, getString(com.ncautomation.commons.R.string.extra_large))
             )
 
             RadioGroupDialog(this@SettingsActivity, items, config.fontSize) {
@@ -311,7 +311,7 @@ class SettingsActivity : SimpleActivity() {
             val items = arrayListOf(
                 RadioItem(LOCK_SCREEN_SENDER_MESSAGE, getString(R.string.sender_and_message)),
                 RadioItem(LOCK_SCREEN_SENDER, getString(R.string.sender_only)),
-                RadioItem(LOCK_SCREEN_NOTHING, getString(com.simplemobiletools.commons.R.string.nothing)),
+                RadioItem(LOCK_SCREEN_NOTHING, getString(com.ncautomation.commons.R.string.nothing)),
             )
 
             RadioGroupDialog(this@SettingsActivity, items, config.lockScreenVisibilitySetting) {
@@ -325,7 +325,7 @@ class SettingsActivity : SimpleActivity() {
         when (config.lockScreenVisibilitySetting) {
             LOCK_SCREEN_SENDER_MESSAGE -> R.string.sender_and_message
             LOCK_SCREEN_SENDER -> R.string.sender_only
-            else -> com.simplemobiletools.commons.R.string.nothing
+            else -> com.ncautomation.commons.R.string.nothing
         }
     )
 
@@ -375,14 +375,14 @@ class SettingsActivity : SimpleActivity() {
 
         settingsEmptyRecycleBinHolder.setOnClickListener {
             if (recycleBinMessages == 0) {
-                toast(com.simplemobiletools.commons.R.string.recycle_bin_empty)
+                toast(com.ncautomation.commons.R.string.recycle_bin_empty)
             } else {
                 ConfirmationDialog(
                     activity = this@SettingsActivity,
                     message = "",
                     messageId = R.string.empty_recycle_bin_messages_confirmation,
-                    positive = com.simplemobiletools.commons.R.string.yes,
-                    negative = com.simplemobiletools.commons.R.string.no
+                    positive = com.ncautomation.commons.R.string.yes,
+                    negative = com.ncautomation.commons.R.string.no
                 ) {
                     ensureBackgroundThread {
                         emptyMessagesRecycleBin()
@@ -409,12 +409,12 @@ class SettingsActivity : SimpleActivity() {
 
                     if (config.isAppPasswordProtectionOn) {
                         val confirmationTextId = if (config.appProtectionType == PROTECTION_FINGERPRINT) {
-                            com.simplemobiletools.commons.R.string.fingerprint_setup_successfully
+                            com.ncautomation.commons.R.string.fingerprint_setup_successfully
                         } else {
-                            com.simplemobiletools.commons.R.string.protection_setup_successfully
+                            com.ncautomation.commons.R.string.protection_setup_successfully
                         }
 
-                        ConfirmationDialog(this@SettingsActivity, "", confirmationTextId, com.simplemobiletools.commons.R.string.ok, 0) { }
+                        ConfirmationDialog(this@SettingsActivity, "", confirmationTextId, com.ncautomation.commons.R.string.ok, 0) { }
                     }
                 }
             }

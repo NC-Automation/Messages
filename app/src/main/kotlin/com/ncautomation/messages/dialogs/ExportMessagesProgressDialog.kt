@@ -4,8 +4,8 @@ import android.net.Uri
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.activities.SimpleActivity
 import com.ncautomation.messages.databinding.DialogExportMessagesProgressBinding
 import com.ncautomation.messages.extensions.config
@@ -27,7 +27,7 @@ class ExportMessagesProgressDialog(
         }
         status = binding.exportMessagesStatus
         activity.getAlertDialogBuilder()
-            .setNegativeButton(com.simplemobiletools.commons.R.string.cancel, null)
+            .setNegativeButton(com.ncautomation.commons.R.string.cancel, null)
             .apply {
                 activity.setupDialogStuff(binding.root, this, 0,"Exporting Messages") { alertDialog ->
                     alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
@@ -50,7 +50,7 @@ class ExportMessagesProgressDialog(
 
                         MessagesReader(activity).getMessagesToExport(config.exportSms, config.exportMms, this, config.exportAttachments) { messagesToExport ->
                             if (messagesToExport.isEmpty()) {
-                                activity.toast(com.simplemobiletools.commons.R.string.no_entries_for_exporting)
+                                activity.toast(com.ncautomation.commons.R.string.no_entries_for_exporting)
                                 alertDialog.cancel()
                                 return@getMessagesToExport
                             }
@@ -87,7 +87,7 @@ class ExportMessagesProgressDialog(
 //
 //                                it.write(jsonString.toByteArray())
 //                            }
-                            activity.toast(com.simplemobiletools.commons.R.string.exporting_successful)
+                            activity.toast(com.ncautomation.commons.R.string.exporting_successful)
                         }
                         alertDialog.cancel()
                     } catch (e: Exception) {

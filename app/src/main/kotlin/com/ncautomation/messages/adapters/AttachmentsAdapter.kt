@@ -18,8 +18,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.extensions.*
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.extensions.*
 import com.ncautomation.messages.R
 import com.ncautomation.messages.activities.VCardViewerActivity
 import com.ncautomation.messages.databinding.ItemAttachmentDocumentPreviewBinding
@@ -164,7 +164,7 @@ class AttachmentsAdapter(
     }
 
     private fun loadMediaPreview(binding: ItemAttachmentMediaPreviewBinding, attachment: AttachmentSelection) {
-        val roundedCornersRadius = resources.getDimension(com.simplemobiletools.commons.R.dimen.activity_margin).toInt()
+        val roundedCornersRadius = resources.getDimension(com.ncautomation.commons.R.dimen.activity_margin).toInt()
         val size = resources.getDimension(R.dimen.attachment_preview_size).toInt()
 
         val options = RequestOptions()
@@ -179,7 +179,7 @@ class AttachmentsAdapter(
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
                     removeAttachment(attachment)
-                    activity.toast(com.simplemobiletools.commons.R.string.unknown_error_occurred)
+                    activity.toast(com.ncautomation.commons.R.string.unknown_error_occurred)
                     return false
                 }
 

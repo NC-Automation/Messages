@@ -2,7 +2,7 @@ package com.ncautomation.messages.helpers
 
 import android.content.Context
 import android.net.Uri
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import ezvcard.Ezvcard
 import ezvcard.VCard
 

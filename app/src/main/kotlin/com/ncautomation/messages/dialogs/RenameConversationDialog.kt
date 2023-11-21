@@ -3,10 +3,10 @@ package com.ncautomation.messages.dialogs
 import android.app.Activity
 import android.content.DialogInterface.BUTTON_POSITIVE
 import androidx.appcompat.app.AlertDialog
-import com.simplemobiletools.commons.extensions.getAlertDialogBuilder
-import com.simplemobiletools.commons.extensions.setupDialogStuff
-import com.simplemobiletools.commons.extensions.showKeyboard
-import com.simplemobiletools.commons.extensions.toast
+import com.ncautomation.commons.extensions.getAlertDialogBuilder
+import com.ncautomation.commons.extensions.setupDialogStuff
+import com.ncautomation.commons.extensions.showKeyboard
+import com.ncautomation.commons.extensions.toast
 import com.ncautomation.messages.R
 import com.ncautomation.messages.databinding.DialogRenameConversationBinding
 import com.ncautomation.messages.models.Conversation
@@ -30,8 +30,8 @@ class RenameConversationDialog(
         }
 
         activity.getAlertDialogBuilder()
-            .setPositiveButton(com.simplemobiletools.commons.R.string.ok, null)
-            .setNegativeButton(com.simplemobiletools.commons.R.string.cancel, null)
+            .setPositiveButton(com.ncautomation.commons.R.string.ok, null)
+            .setNegativeButton(com.ncautomation.commons.R.string.cancel, null)
             .apply {
                 activity.setupDialogStuff(binding.root, this, R.string.rename_conversation) { alertDialog ->
                     dialog = alertDialog
@@ -40,7 +40,7 @@ class RenameConversationDialog(
                         setOnClickListener {
                             val newTitle = binding.renameConvEditText.text.toString()
                             if (newTitle.isEmpty()) {
-                                activity.toast(com.simplemobiletools.commons.R.string.empty_name)
+                                activity.toast(com.ncautomation.commons.R.string.empty_name)
                                 return@setOnClickListener
                             }
 

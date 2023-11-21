@@ -1,7 +1,7 @@
 package com.ncautomation.messages.helpers
 
 import android.content.Context
-import com.simplemobiletools.commons.helpers.BaseConfig
+import com.ncautomation.commons.helpers.BaseConfig
 import com.ncautomation.messages.extensions.getDefaultKeyboardHeight
 import com.ncautomation.messages.models.Conversation
 

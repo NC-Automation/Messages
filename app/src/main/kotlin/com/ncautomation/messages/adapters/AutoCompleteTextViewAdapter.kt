@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
-import com.simplemobiletools.commons.databinding.ItemContactWithNumberBinding
-import com.simplemobiletools.commons.extensions.darkenColor
-import com.simplemobiletools.commons.extensions.getContrastColor
-import com.simplemobiletools.commons.extensions.getProperBackgroundColor
-import com.simplemobiletools.commons.extensions.normalizeString
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.models.SimpleContact
+import com.ncautomation.commons.databinding.ItemContactWithNumberBinding
+import com.ncautomation.commons.extensions.darkenColor
+import com.ncautomation.commons.extensions.getContrastColor
+import com.ncautomation.commons.extensions.getProperBackgroundColor
+import com.ncautomation.commons.extensions.normalizeString
+import com.ncautomation.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.activities.SimpleActivity
 
 class AutoCompleteTextViewAdapter(val activity: SimpleActivity, val contacts: ArrayList<SimpleContact>) : ArrayAdapter<SimpleContact>(activity, 0, contacts) {

@@ -14,7 +14,7 @@
         android:paddingTop="@dimen/activity_margin"
         android:paddingEnd="@dimen/activity_margin">
 
-        <com.simplemobiletools.commons.views.MyAppCompatCheckbox
+        <com.ncautomation.commons.views.MyAppCompatCheckbox
             android:id="@+id/import_sms_checkbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             android:paddingBottom="@dimen/small_margin"
             android:text="@string/import_sms" />
 
-        <com.simplemobiletools.commons.views.MyAppCompatCheckbox
+        <com.ncautomation.commons.views.MyAppCompatCheckbox
             android:id="@+id/import_mms_checkbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -2,9 +2,9 @@ package com.ncautomation.messages.helpers
 
 import android.app.Activity
 import android.net.Uri
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.R
 import com.ncautomation.messages.databinding.ItemAttachmentDocumentBinding
 import com.ncautomation.messages.databinding.ItemAttachmentDocumentPreviewBinding
@@ -124,7 +124,7 @@ fun ItemAttachmentVcardBinding.setupVCardPreview(
         activity.runOnUiThread {
             if (vCards.isEmpty()) {
                 vcardTitle.beVisible()
-                vcardTitle.text = context.getString(com.simplemobiletools.commons.R.string.unknown_error_occurred)
+                vcardTitle.text = context.getString(com.ncautomation.commons.R.string.unknown_error_occurred)
                 return@runOnUiThread
             }
 

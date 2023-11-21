@@ -30,6 +30,6 @@
 }
 
 # Gson
--keep class com.simplemobiletools.commons.models.SimpleContact { *; }
+-keep class com.ncautomation.commons.models.SimpleContact { *; }
 -keep class com.ncautomation.messages.models.Attachment { *; }
 -keep class com.ncautomation.messages.models.MessageAttachment { *; }

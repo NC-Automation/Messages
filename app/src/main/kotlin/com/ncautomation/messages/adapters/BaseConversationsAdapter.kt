@@ -12,11 +12,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller
-import com.ncautomation.messages.adapters.MyRecyclerViewListAdapter
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.views.MyRecyclerView
 import com.ncautomation.messages.activities.SimpleActivity
 import com.ncautomation.messages.databinding.ItemConversationBinding
 import com.ncautomation.messages.extensions.*

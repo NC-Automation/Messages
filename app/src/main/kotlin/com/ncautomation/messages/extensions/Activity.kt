@@ -5,13 +5,10 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
-import android.widget.Toast
-import com.simplemobiletools.commons.R
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.dialogs.WritePermissionDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
-import com.simplemobiletools.commons.models.SimpleContact
+import com.ncautomation.commons.R
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.*
+import com.ncautomation.commons.models.SimpleContact
 import java.util.Locale
 
 fun Activity.dialNumber(phoneNumber: String, callback: (() -> Unit)? = null) {
@@ -23,7 +20,7 @@ fun Activity.dialNumber(phoneNumber: String, callback: (() -> Unit)? = null) {
             startActivity(this)
             callback?.invoke()
         } catch (e: ActivityNotFoundException) {
-            toast(com.simplemobiletools.commons.R.string.no_app_found)
+            toast(com.ncautomation.commons.R.string.no_app_found)
         } catch (e: Exception) {
             showErrorToast(e)
         }
@@ -44,7 +41,7 @@ fun Activity.launchViewIntent(uri: Uri, mimetype: String, filename: String) {
             if (newMimetype.isNotEmpty() && mimetype != newMimetype) {
                 launchViewIntent(uri, newMimetype, filename)
             } else {
-                toast(com.simplemobiletools.commons.R.string.no_app_found)
+                toast(com.ncautomation.commons.R.string.no_app_found)
             }
         } catch (e: Exception) {
             showErrorToast(e)

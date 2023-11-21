@@ -9,8 +9,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.SimpleContactsHelper
 import com.ncautomation.messages.R
 import com.ncautomation.messages.activities.SimpleActivity
 import com.ncautomation.messages.databinding.ItemVcardContactBinding
@@ -76,7 +76,7 @@ class VCardViewerAdapter(
                         null
                     }
 
-                    val roundingRadius = resources.getDimensionPixelSize(com.simplemobiletools.commons.R.dimen.big_margin)
+                    val roundingRadius = resources.getDimensionPixelSize(com.ncautomation.commons.R.dimen.big_margin)
                     val transformation = RoundedCorners(roundingRadius)
                     val options = RequestOptions()
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)

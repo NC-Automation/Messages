@@ -3,7 +3,7 @@ package com.ncautomation.messages.helpers
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.simplemobiletools.commons.models.SimpleContact
+import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.models.Attachment
 import com.ncautomation.messages.models.MessageAttachment
 

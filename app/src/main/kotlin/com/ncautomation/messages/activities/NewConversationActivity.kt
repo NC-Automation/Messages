@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.view.WindowManager
 import com.google.gson.Gson
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
-import com.simplemobiletools.commons.dialogs.RadioGroupDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
-import com.simplemobiletools.commons.models.RadioItem
-import com.simplemobiletools.commons.models.SimpleContact
+import com.ncautomation.commons.dialogs.RadioGroupDialog
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.*
+import com.ncautomation.commons.models.RadioItem
+import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.R
 import com.ncautomation.messages.adapters.ContactsAdapter
 import com.ncautomation.messages.databinding.ActivityNewConversationBinding
@@ -144,9 +144,9 @@ class NewConversationActivity : SimpleActivity() {
 
         if (!hasContacts) {
             val placeholderText = if (hasPermission(PERMISSION_READ_CONTACTS)) {
-                com.simplemobiletools.commons.R.string.no_contacts_found
+                com.ncautomation.commons.R.string.no_contacts_found
             } else {
-                com.simplemobiletools.commons.R.string.no_access_to_contacts
+                com.ncautomation.commons.R.string.no_access_to_contacts
             }
 
             binding.noContactsPlaceholder.text = getString(placeholderText)

@@ -3,9 +3,9 @@ package com.ncautomation.messages.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
+import com.ncautomation.commons.dialogs.ConfirmationDialog
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.*
 import com.ncautomation.messages.R
 import com.ncautomation.messages.adapters.ArchivedConversationsAdapter
 import com.ncautomation.messages.databinding.ActivityArchivedConversationsBinding
@@ -98,8 +98,8 @@ class ArchivedConversationsActivity : SimpleActivity() {
             activity = this,
             message = "",
             messageId = R.string.empty_archive_confirmation,
-            positive = com.simplemobiletools.commons.R.string.yes,
-            negative = com.simplemobiletools.commons.R.string.no
+            positive = com.ncautomation.commons.R.string.yes,
+            negative = com.ncautomation.commons.R.string.no
         ) {
             removeAllArchivedConversations {
                 loadArchivedConversations()

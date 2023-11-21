@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.telephony.PhoneNumberUtils
-import com.simplemobiletools.commons.helpers.isSPlus
+import com.ncautomation.commons.helpers.isSPlus
 import com.ncautomation.messages.messaging.SmsException.Companion.EMPTY_DESTINATION_ADDRESS
 import com.ncautomation.messages.messaging.SmsException.Companion.ERROR_SENDING_MESSAGE
 import com.ncautomation.messages.receivers.SendStatusReceiver

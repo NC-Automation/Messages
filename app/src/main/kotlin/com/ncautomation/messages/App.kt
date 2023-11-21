@@ -1,7 +1,7 @@
 package com.ncautomation.messages
 
 import android.app.Application
-import com.simplemobiletools.commons.extensions.checkUseEnglish
+import com.ncautomation.commons.extensions.checkUseEnglish
 
 class App : Application() {
     private var activeThreadId: Long? = null

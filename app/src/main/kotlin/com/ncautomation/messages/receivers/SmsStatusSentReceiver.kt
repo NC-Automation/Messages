@@ -9,8 +9,8 @@ import android.os.Looper
 import android.provider.Telephony.Sms
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.simplemobiletools.commons.extensions.getMyContactsCursor
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.getMyContactsCursor
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.extensions.*
 import com.ncautomation.messages.helpers.refreshMessages
 

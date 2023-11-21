@@ -3,13 +3,13 @@ package com.ncautomation.messages.adapters
 import android.content.Intent
 import android.text.TextUtils
 import android.view.Menu
-import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.dialogs.FeatureLockedDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.KEY_PHONE
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
-import com.simplemobiletools.commons.helpers.isNougatPlus
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.dialogs.ConfirmationDialog
+import com.ncautomation.commons.dialogs.FeatureLockedDialog
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.KEY_PHONE
+import com.ncautomation.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.helpers.isNougatPlus
+import com.ncautomation.commons.views.MyRecyclerView
 import com.ncautomation.messages.R
 import com.ncautomation.messages.activities.SimpleActivity
 import com.ncautomation.messages.dialogs.RenameConversationDialog
@@ -31,7 +31,7 @@ class ConversationsAdapter(
         val archiveAvailable = activity.config.isArchiveAvailable
 
         menu.apply {
-            findItem(R.id.cab_block_number).title = activity.addLockedLabelIfNeeded(com.simplemobiletools.commons.R.string.block_number)
+            findItem(R.id.cab_block_number).title = activity.addLockedLabelIfNeeded(com.ncautomation.commons.R.string.block_number)
             findItem(R.id.cab_block_number).isVisible = isNougatPlus()
             findItem(R.id.cab_add_number_to_contact).isVisible = isSingleSelection && !isGroupConversation
             findItem(R.id.cab_dial_number).isVisible = isSingleSelection && !isGroupConversation && !isShortCodeWithLetters(selectedConversation.phoneNumber)
@@ -76,7 +76,7 @@ class ConversationsAdapter(
     private fun askConfirmBlock() {
         val numbers = getSelectedItems().distinctBy { it.phoneNumber }.map { it.phoneNumber }
         val numbersString = TextUtils.join(", ", numbers)
-        val question = String.format(resources.getString(com.simplemobiletools.commons.R.string.block_confirmation), numbersString)
+        val question = String.format(resources.getString(com.ncautomation.commons.R.string.block_confirmation), numbersString)
 
         ConfirmationDialog(activity, question) {
             blockNumbers()
@@ -120,7 +120,7 @@ class ConversationsAdapter(
         val itemsCnt = selectedKeys.size
         val items = resources.getQuantityString(R.plurals.delete_conversations, itemsCnt, itemsCnt)
 
-        val baseString = com.simplemobiletools.commons.R.string.deletion_confirmation
+        val baseString = com.ncautomation.commons.R.string.deletion_confirmation
         val question = String.format(resources.getString(baseString), items)
 
         ConfirmationDialog(activity, question) {

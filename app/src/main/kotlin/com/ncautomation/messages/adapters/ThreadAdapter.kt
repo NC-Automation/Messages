@@ -29,12 +29,12 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.simplemobiletools.commons.adapters.MyRecyclerViewListAdapter
-import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.adapters.MyRecyclerViewListAdapter
+import com.ncautomation.commons.dialogs.ConfirmationDialog
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.views.MyRecyclerView
 import com.ncautomation.messages.R
 import com.ncautomation.messages.activities.NewConversationActivity
 import com.ncautomation.messages.activities.SimpleActivity
@@ -216,9 +216,9 @@ class ThreadAdapter(
         }
 
         val baseString = if (activity.config.useRecycleBin && !isRecycleBin) {
-            com.simplemobiletools.commons.R.string.move_to_recycle_bin_confirmation
+            com.ncautomation.commons.R.string.move_to_recycle_bin_confirmation
         } else {
-            com.simplemobiletools.commons.R.string.deletion_confirmation
+            com.ncautomation.commons.R.string.deletion_confirmation
         }
         val question = String.format(resources.getString(baseString), items)
 
@@ -457,7 +457,7 @@ class ThreadAdapter(
 
                 if (message.isScheduled) {
                     typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
-                    val scheduledDrawable = AppCompatResources.getDrawable(activity, com.simplemobiletools.commons.R.drawable.ic_clock_vector)?.apply {
+                    val scheduledDrawable = AppCompatResources.getDrawable(activity, com.ncautomation.commons.R.drawable.ic_clock_vector)?.apply {
                         applyColorFilter(contrastColor)
                         val size = lineHeight
                         setBounds(0, 0, size, size)
@@ -603,7 +603,7 @@ class ThreadAdapter(
 
     private fun setupThreadSuccess(view: View, isDelivered: Boolean) {
         ItemThreadSuccessBinding.bind(view).apply {
-            threadSuccess.setImageResource(if (isDelivered) R.drawable.ic_check_double_vector else com.simplemobiletools.commons.R.drawable.ic_check_vector)
+            threadSuccess.setImageResource(if (isDelivered) R.drawable.ic_check_double_vector else com.ncautomation.commons.R.drawable.ic_check_vector)
             threadSuccess.applyColorFilter(textColor)
         }
     }

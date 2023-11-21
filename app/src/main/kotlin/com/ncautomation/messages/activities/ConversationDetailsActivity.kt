@@ -4,13 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.core.content.res.ResourcesCompat
-import com.simplemobiletools.commons.dialogs.RadioGroupDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.NavigationIcon
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
-import com.simplemobiletools.commons.helpers.isRPlus
-import com.simplemobiletools.commons.models.RadioItem
-import com.simplemobiletools.commons.models.SimpleContact
+import com.ncautomation.commons.dialogs.RadioGroupDialog
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.NavigationIcon
+import com.ncautomation.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.helpers.isRPlus
+import com.ncautomation.commons.models.RadioItem
+import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.adapters.ContactsAdapter
 import com.ncautomation.messages.databinding.ActivityConversationDetailsBinding
 import com.ncautomation.messages.dialogs.RenameConversationDialog
@@ -83,7 +83,7 @@ class ConversationDetailsActivity : SimpleActivity() {
 
     private fun setupTextViews() {
         binding.conversationName.apply {
-            ResourcesCompat.getDrawable(resources, com.simplemobiletools.commons.R.drawable.ic_edit_vector, theme)?.apply {
+            ResourcesCompat.getDrawable(resources, com.ncautomation.commons.R.drawable.ic_edit_vector, theme)?.apply {
                 applyColorFilter(getProperTextColor())
                 setCompoundDrawablesWithIntrinsicBounds(null, null, this, null)
             }

@@ -4,7 +4,7 @@ import android.provider.Telephony
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.simplemobiletools.commons.models.SimpleContact
+import com.ncautomation.commons.models.SimpleContact
 
 @Entity(tableName = "messages")
 data class Message(

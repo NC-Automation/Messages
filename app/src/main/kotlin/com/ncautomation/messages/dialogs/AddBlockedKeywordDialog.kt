@@ -1,11 +1,11 @@
 package com.ncautomation.messages.dialogs
 
 import androidx.appcompat.app.AlertDialog
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.extensions.getAlertDialogBuilder
-import com.simplemobiletools.commons.extensions.setupDialogStuff
-import com.simplemobiletools.commons.extensions.showKeyboard
-import com.simplemobiletools.commons.extensions.value
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.extensions.getAlertDialogBuilder
+import com.ncautomation.commons.extensions.setupDialogStuff
+import com.ncautomation.commons.extensions.showKeyboard
+import com.ncautomation.commons.extensions.value
 import com.ncautomation.messages.databinding.DialogAddBlockedKeywordBinding
 import com.ncautomation.messages.extensions.config
 
@@ -18,8 +18,8 @@ class AddBlockedKeywordDialog(val activity: BaseSimpleActivity, private val orig
         }
 
         activity.getAlertDialogBuilder()
-            .setPositiveButton(com.simplemobiletools.commons.R.string.ok, null)
-            .setNegativeButton(com.simplemobiletools.commons.R.string.cancel, null)
+            .setPositiveButton(com.ncautomation.commons.R.string.ok, null)
+            .setNegativeButton(com.ncautomation.commons.R.string.cancel, null)
             .apply {
                 activity.setupDialogStuff(binding.root, this) { alertDialog ->
                     alertDialog.showKeyboard(binding.addBlockedKeywordEdittext)

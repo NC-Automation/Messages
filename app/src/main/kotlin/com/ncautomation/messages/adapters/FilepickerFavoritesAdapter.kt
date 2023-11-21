@@ -3,11 +3,11 @@ package com.ncautomation.messages.adapters
 import android.util.TypedValue
 import android.view.Menu
 import android.view.ViewGroup
-import com.simplemobiletools.commons.R
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.databinding.FilepickerFavoriteBinding
-import com.simplemobiletools.commons.extensions.getTextSize
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.R
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.databinding.FilepickerFavoriteBinding
+import com.ncautomation.commons.extensions.getTextSize
+import com.ncautomation.commons.views.MyRecyclerView
 
 class FilepickerFavoritesAdapter(
     activity: BaseSimpleActivity, val paths: List<String>, recyclerView: MyRecyclerView,

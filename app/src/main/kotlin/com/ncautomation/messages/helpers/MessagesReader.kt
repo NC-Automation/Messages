@@ -7,9 +7,9 @@ import android.provider.Telephony.Mms
 import android.provider.Telephony.Sms
 import android.util.Base64
 import android.widget.TextView
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.isQPlus
-import com.simplemobiletools.commons.helpers.isRPlus
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.isQPlus
+import com.ncautomation.commons.helpers.isRPlus
 import com.ncautomation.messages.dialogs.ExportMessagesProgressDialog
 import com.ncautomation.messages.extensions.getConversationIds
 import com.ncautomation.messages.models.*

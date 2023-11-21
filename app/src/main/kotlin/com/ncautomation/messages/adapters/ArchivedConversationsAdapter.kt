@@ -1,10 +1,10 @@
 package com.ncautomation.messages.adapters
 
 import android.view.Menu
-import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.extensions.notificationManager
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.dialogs.ConfirmationDialog
+import com.ncautomation.commons.extensions.notificationManager
+import com.ncautomation.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.views.MyRecyclerView
 import com.ncautomation.messages.R
 import com.ncautomation.messages.activities.SimpleActivity
 import com.ncautomation.messages.extensions.deleteConversation
@@ -35,7 +35,7 @@ class ArchivedConversationsAdapter(
         val itemsCnt = selectedKeys.size
         val items = resources.getQuantityString(R.plurals.delete_conversations, itemsCnt, itemsCnt)
 
-        val baseString = com.simplemobiletools.commons.R.string.deletion_confirmation
+        val baseString = com.ncautomation.commons.R.string.deletion_confirmation
         val question = String.format(resources.getString(baseString), items)
 
         ConfirmationDialog(activity, question) {

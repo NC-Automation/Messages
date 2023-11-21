@@ -2,9 +2,9 @@ package com.ncautomation.messages.dialogs
 
 import android.annotation.SuppressLint
 import android.telephony.SubscriptionInfo
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.dialogs.BasePropertiesDialog
-import com.simplemobiletools.commons.extensions.*
+import com.ncautomation.commons.activities.BaseSimpleActivity
+import com.ncautomation.commons.dialogs.BasePropertiesDialog
+import com.ncautomation.commons.extensions.*
 import com.ncautomation.messages.R
 import com.ncautomation.messages.extensions.config
 import com.ncautomation.messages.extensions.subscriptionManagerCompat
@@ -23,7 +23,7 @@ class MessageDetailsDialog(val activity: BaseSimpleActivity, val message: Messag
         addProperty(message.getSentOrReceivedAtLabel(), message.getSentOrReceivedAt())
 
         activity.getAlertDialogBuilder()
-            .setPositiveButton(com.simplemobiletools.commons.R.string.ok) { _, _ -> }
+            .setPositiveButton(com.ncautomation.commons.R.string.ok) { _, _ -> }
             .apply {
                 activity.setupDialogStuff(mDialogView.root, this, R.string.message_details)
             }
@@ -57,7 +57,7 @@ class MessageDetailsDialog(val activity: BaseSimpleActivity, val message: Messag
 
     private fun Message.getSIM(availableSIMs: List<SubscriptionInfo>): String {
         return availableSIMs.firstOrNull { it.subscriptionId == subscriptionId }?.displayName?.toString()
-            ?: activity.getString(com.simplemobiletools.commons.R.string.unknown)
+            ?: activity.getString(com.ncautomation.commons.R.string.unknown)
     }
 
     private fun Message.getSentOrReceivedAtLabel(): Int {

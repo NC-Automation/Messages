@@ -8,9 +8,9 @@ import android.provider.Telephony.Sms
 import android.util.Base64
 import com.google.android.mms.pdu_alt.PduHeaders
 import com.klinker.android.send_message.Utils
-import com.simplemobiletools.commons.extensions.getLongValue
-import com.simplemobiletools.commons.extensions.queryCursor
-import com.simplemobiletools.commons.helpers.isRPlus
+import com.ncautomation.commons.extensions.getLongValue
+import com.ncautomation.commons.extensions.queryCursor
+import com.ncautomation.commons.helpers.isRPlus
 import com.ncautomation.messages.models.MmsAddress
 import com.ncautomation.messages.models.MmsBackup
 import com.ncautomation.messages.models.MmsPart

@@ -4,8 +4,8 @@ import android.content.Context
 import android.telephony.SmsMessage
 import android.widget.Toast.LENGTH_LONG
 import com.klinker.android.send_message.Settings
-import com.simplemobiletools.commons.extensions.showErrorToast
-import com.simplemobiletools.commons.extensions.toast
+import com.ncautomation.commons.extensions.showErrorToast
+import com.ncautomation.commons.extensions.toast
 import com.ncautomation.messages.R
 import com.ncautomation.messages.extensions.config
 import com.ncautomation.messages.extensions.messagingUtils

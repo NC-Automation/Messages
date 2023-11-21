@@ -3,10 +3,10 @@ package com.ncautomation.messages.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.simplemobiletools.commons.extensions.normalizePhoneNumber
-import com.simplemobiletools.commons.extensions.sendEmailIntent
-import com.simplemobiletools.commons.extensions.viewBinding
-import com.simplemobiletools.commons.helpers.NavigationIcon
+import com.ncautomation.commons.extensions.normalizePhoneNumber
+import com.ncautomation.commons.extensions.sendEmailIntent
+import com.ncautomation.commons.extensions.viewBinding
+import com.ncautomation.commons.helpers.NavigationIcon
 import com.ncautomation.messages.R
 import com.ncautomation.messages.adapters.VCardViewerAdapter
 import com.ncautomation.messages.databinding.ActivityVcardViewerBinding

@@ -14,9 +14,9 @@ import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
-import com.simplemobiletools.commons.extensions.getProperPrimaryColor
-import com.simplemobiletools.commons.extensions.notificationManager
-import com.simplemobiletools.commons.helpers.*
+import com.ncautomation.commons.extensions.getProperPrimaryColor
+import com.ncautomation.commons.extensions.notificationManager
+import com.ncautomation.commons.helpers.*
 import com.ncautomation.messages.R
 import com.ncautomation.messages.activities.ThreadActivity
 import com.ncautomation.messages.extensions.config
@@ -145,12 +145,12 @@ class NotificationHelper(private val context: Context) {
                 builder.addAction(replyAction)
             }
 
-            builder.addAction(com.simplemobiletools.commons.R.drawable.ic_check_vector, context.getString(R.string.mark_as_read), markAsReadPendingIntent)
+            builder.addAction(com.ncautomation.commons.R.drawable.ic_check_vector, context.getString(R.string.mark_as_read), markAsReadPendingIntent)
                 .setChannelId(channelId)
             if (isNoReplySms) {
                 builder.addAction(
-                    com.simplemobiletools.commons.R.drawable.ic_delete_vector,
-                    context.getString(com.simplemobiletools.commons.R.string.delete),
+                    com.ncautomation.commons.R.drawable.ic_delete_vector,
+                    context.getString(com.ncautomation.commons.R.string.delete),
                     deleteSmsPendingIntent
                 ).setChannelId(channelId)
             }

@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.provider.Telephony
 import android.widget.Toast
-import com.simplemobiletools.commons.extensions.showErrorToast
-import com.simplemobiletools.commons.extensions.toast
+import com.ncautomation.commons.extensions.showErrorToast
+import com.ncautomation.commons.extensions.toast
 import com.ncautomation.messages.R
 import com.ncautomation.messages.extensions.deleteMessage
 import com.ncautomation.messages.helpers.refreshMessages

@@ -3,7 +3,7 @@ package com.ncautomation.messages.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 
 abstract class SendStatusReceiver : BroadcastReceiver() {
     // Updates the status of the message in the internal database

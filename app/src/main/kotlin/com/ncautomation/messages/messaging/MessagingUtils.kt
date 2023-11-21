@@ -13,8 +13,8 @@ import android.widget.Toast
 import com.klinker.android.send_message.Message
 import com.klinker.android.send_message.Settings
 import com.klinker.android.send_message.Transaction
-import com.simplemobiletools.commons.extensions.showErrorToast
-import com.simplemobiletools.commons.extensions.toast
+import com.ncautomation.commons.extensions.showErrorToast
+import com.ncautomation.commons.extensions.toast
 import com.ncautomation.messages.R
 import com.ncautomation.messages.extensions.getThreadId
 import com.ncautomation.messages.extensions.isPlainTextMimeType
@@ -166,7 +166,7 @@ class MessagingUtils(val context: Context) {
             } catch (e: Exception) {
                 context.showErrorToast(e)
             } catch (e: Error) {
-                context.showErrorToast(e.localizedMessage ?: context.getString(com.simplemobiletools.commons.R.string.unknown_error_occurred))
+                context.showErrorToast(e.localizedMessage ?: context.getString(com.ncautomation.commons.R.string.unknown_error_occurred))
             }
         }
         else {

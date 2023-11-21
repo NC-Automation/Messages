@@ -7,9 +7,9 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.RemoteInput
-import com.simplemobiletools.commons.extensions.showErrorToast
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.showErrorToast
+import com.ncautomation.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.extensions.*
 import com.ncautomation.messages.helpers.REPLY
 import com.ncautomation.messages.helpers.THREAD_ID

@@ -1,7 +1,7 @@
 package com.ncautomation.messages.activities
 
 import android.content.Intent
-import com.simplemobiletools.commons.activities.BaseSplashActivity
+import com.ncautomation.commons.activities.BaseSplashActivity
 
 class SplashActivity : BaseSplashActivity() {
     override fun initActivity() {

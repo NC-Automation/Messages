@@ -21,10 +21,10 @@ import android.webkit.MimeTypeMap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
-import com.simplemobiletools.commons.models.PhoneNumber
-import com.simplemobiletools.commons.models.SimpleContact
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.*
+import com.ncautomation.commons.models.PhoneNumber
+import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.R
 import com.ncautomation.messages.databases.MessagesDatabase
 import com.ncautomation.messages.helpers.*
@@ -695,7 +695,7 @@ fun Context.removeAllArchivedConversations(callback: (() -> Unit)? = null) {
             toast(R.string.archive_emptied_successfully)
             callback?.invoke()
         } catch (e: Exception) {
-            toast(com.simplemobiletools.commons.R.string.unknown_error_occurred)
+            toast(com.ncautomation.commons.R.string.unknown_error_occurred)
         }
     }
 }

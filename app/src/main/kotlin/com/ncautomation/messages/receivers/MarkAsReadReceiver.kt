@@ -3,8 +3,8 @@ package com.ncautomation.messages.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.simplemobiletools.commons.extensions.notificationManager
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.extensions.notificationManager
+import com.ncautomation.commons.helpers.ensureBackgroundThread
 import com.ncautomation.messages.extensions.conversationsDB
 import com.ncautomation.messages.extensions.markThreadMessagesRead
 import com.ncautomation.messages.extensions.updateUnreadCountBadge

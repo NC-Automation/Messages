@@ -14,11 +14,11 @@ import android.os.Bundle
 import android.provider.Telephony
 import android.text.TextUtils
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.simplemobiletools.commons.dialogs.PermissionRequiredDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
-import com.simplemobiletools.commons.models.FAQItem
-import com.simplemobiletools.commons.models.Release
+import com.ncautomation.commons.dialogs.PermissionRequiredDialog
+import com.ncautomation.commons.extensions.*
+import com.ncautomation.commons.helpers.*
+import com.ncautomation.commons.models.FAQItem
+import com.ncautomation.commons.models.Release
 import com.ncautomation.messages.BuildConfig
 import com.ncautomation.messages.R
 import com.ncautomation.messages.adapters.ConversationsAdapter
@@ -33,7 +33,7 @@ import com.ncautomation.messages.models.SearchResult
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import com.simplemobiletools.commons.R as R1
+import com.ncautomation.commons.R as R1
 
 class MainActivity : SimpleActivity() {
     private val MAKE_DEFAULT_APP_REQUEST = 1
@@ -199,7 +199,7 @@ class MainActivity : SimpleActivity() {
 
     private fun refreshMenuItems() {
         binding.mainMenu.getToolbar().menu.apply {
-            findItem(R.id.more_apps_from_us).isVisible = false //!resources.getBoolean(com.simplemobiletools.commons.R.bool.hide_google_relations)
+            findItem(R.id.more_apps_from_us).isVisible = false //!resources.getBoolean(com.ncautomation.commons.R.bool.hide_google_relations)
             findItem(R.id.show_recycle_bin).isVisible = config.useRecycleBin
             findItem(R.id.show_archived).isVisible = config.isArchiveAvailable
         }
@@ -667,7 +667,7 @@ class MainActivity : SimpleActivity() {
         )
 
         if (!resources.getBoolean(R1.bool.hide_google_relations)) {
-            //faqItems.add(FAQItem(com.simplemobiletools.commons.R.string.faq_2_title_commons, com.simplemobiletools.commons.R.string.faq_2_text_commons))
+            //faqItems.add(FAQItem(com.ncautomation.commons.R.string.faq_2_title_commons, com.ncautomation.commons.R.string.faq_2_text_commons))
             faqItems.add(FAQItem(R1.string.faq_6_title_commons, R1.string.faq_6_text_commons))
         }
 

@@ -5,11 +5,10 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.ncautomation.messages.adapters.MyRecyclerViewAdapter
-import com.simplemobiletools.commons.extensions.getTextSize
-import com.simplemobiletools.commons.extensions.highlightTextPart
-import com.simplemobiletools.commons.helpers.SimpleContactsHelper
-import com.simplemobiletools.commons.views.MyRecyclerView
+import com.ncautomation.commons.extensions.getTextSize
+import com.ncautomation.commons.extensions.highlightTextPart
+import com.ncautomation.commons.helpers.SimpleContactsHelper
+import com.ncautomation.commons.views.MyRecyclerView
 import com.ncautomation.messages.activities.SimpleActivity
 import com.ncautomation.messages.databinding.ItemSearchResultBinding
 import com.ncautomation.messages.models.SearchResult
