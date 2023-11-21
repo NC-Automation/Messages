@@ -99,11 +99,11 @@ const val FAKE_VERSION_APP_LABEL =
 fun Context.fakeVersionCheck(
     showConfirmationDialog: () -> Unit
 ) {
-    if (!packageName.startsWith("com.simplemobiletools.", true)) {
-        if ((0..50).random() == 10 || baseConfig.appRunCount % 100 == 0) {
-            showConfirmationDialog()
-        }
-    }
+//    if (!packageName.startsWith("com.simplemobiletools.", true)) {
+//        if ((0..50).random() == 10 || baseConfig.appRunCount % 100 == 0) {
+//            showConfirmationDialog()
+//        }
+//    }
 }
 
 fun ComponentActivity.appOnSdCardCheckCompose(
