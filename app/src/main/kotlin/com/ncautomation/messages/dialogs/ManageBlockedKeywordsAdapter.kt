@@ -2,8 +2,8 @@ package com.ncautomation.messages.dialogs
 
 import android.view.*
 import android.widget.PopupMenu
-import com.ncautomation.messages.activities.BaseSimpleActivity
-import com.ncautomation.messages.adapters.MyRecyclerViewAdapter
+import com.simplemobiletools.commons.activities.BaseSimpleActivity
+import com.simplemobiletools.commons.adapters.MyRecyclerViewAdapter
 import com.simplemobiletools.commons.extensions.copyToClipboard
 import com.simplemobiletools.commons.extensions.getPopupMenuTheme
 import com.simplemobiletools.commons.extensions.getProperTextColor

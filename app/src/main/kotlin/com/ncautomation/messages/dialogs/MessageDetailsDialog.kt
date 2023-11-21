@@ -2,7 +2,7 @@ package com.ncautomation.messages.dialogs
 
 import android.annotation.SuppressLint
 import android.telephony.SubscriptionInfo
-import com.ncautomation.messages.activities.BaseSimpleActivity
+import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.dialogs.BasePropertiesDialog
 import com.simplemobiletools.commons.extensions.*
 import com.ncautomation.messages.R

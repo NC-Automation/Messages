@@ -13,7 +13,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.bumptech.glide.request.RequestOptions
 import com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller
 import com.simplemobiletools.commons.R
-import com.ncautomation.messages.activities.BaseSimpleActivity
+import com.simplemobiletools.commons.activities.BaseSimpleActivity
 //import com.ncautomation.messages.adapters.MyRecyclerViewAdapter
 import com.simplemobiletools.commons.databinding.ItemFilepickerListBinding
 import com.simplemobiletools.commons.extensions.*

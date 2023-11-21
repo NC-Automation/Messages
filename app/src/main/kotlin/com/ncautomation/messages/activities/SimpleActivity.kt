@@ -1,6 +1,7 @@
 package com.ncautomation.messages.activities
 
 import com.ncautomation.messages.R
+import com.simplemobiletools.commons.activities.BaseSimpleActivity
 
 open class SimpleActivity : BaseSimpleActivity() {
     override fun getAppIconIDs() = arrayListOf(

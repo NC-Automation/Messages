@@ -7,7 +7,7 @@ import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
 import com.simplemobiletools.commons.R
-import com.ncautomation.messages.activities.BaseSimpleActivity
+import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.dialogs.WritePermissionDialog
 import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.helpers.*

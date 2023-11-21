@@ -1,6 +1,6 @@
 package com.ncautomation.messages.dialogs
 
-import com.ncautomation.messages.activities.BaseSimpleActivity
+import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.extensions.getAlertDialogBuilder
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.ncautomation.messages.databinding.DialogSelectTextBinding

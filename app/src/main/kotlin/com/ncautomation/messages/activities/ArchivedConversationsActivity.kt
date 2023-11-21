@@ -17,7 +17,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class ArchivedConversationsActivity : com.ncautomation.messages.activities.SimpleActivity() {
+class ArchivedConversationsActivity : SimpleActivity() {
     private var bus: EventBus? = null
     private val binding by viewBinding(ActivityArchivedConversationsBinding::inflate)
 

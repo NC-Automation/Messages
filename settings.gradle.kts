@@ -13,4 +13,5 @@ dependencyResolutionManagement {
         maven { setUrl("https://jitpack.io") }
     }
 }
-include(":app")
+include(":app", ":commons")
+//project(":commons").projectDir = File(settingsDir, "../Simple-Commons/commons")

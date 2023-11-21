@@ -4,7 +4,7 @@ import android.util.TypedValue
 import android.view.Menu
 import android.view.ViewGroup
 import com.simplemobiletools.commons.R
-import com.ncautomation.messages.activities.BaseSimpleActivity
+import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.databinding.FilepickerFavoriteBinding
 import com.simplemobiletools.commons.extensions.getTextSize
 import com.simplemobiletools.commons.views.MyRecyclerView
