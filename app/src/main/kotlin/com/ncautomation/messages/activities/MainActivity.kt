@@ -13,7 +13,12 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.provider.Telephony
 import android.text.TextUtils
+import android.util.Log
+import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.Constants.TAG
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ncautomation.commons.dialogs.PermissionRequiredDialog
 import com.ncautomation.commons.extensions.*
 import com.ncautomation.commons.helpers.*
@@ -82,6 +87,23 @@ class MainActivity : SimpleActivity() {
         if (checkAppSideloading()) {
             return
         }
+        setupNotifications()
+    }
+
+    fun setupNotifications(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            Log.d(TAG, token)
+            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+        })
     }
 
     override fun onResume() {

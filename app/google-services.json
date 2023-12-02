@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "698386441243",
+    "project_id": "sip-test1",
+    "storage_bucket": "sip-test1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698386441243:android:bd201555962f28e9b084be",
+        "android_client_info": {
+          "package_name": "com.ncautomation.messages"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRRU7wTMI2LMj4XJOmB_cI83CjjA2bHtY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

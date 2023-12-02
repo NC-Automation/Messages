@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
+    id("com.google.gms.google-services")
     base
 }
 
@@ -52,7 +53,7 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".debug"
+            //applicationIdSuffix = ".debug"
         }
         release {
             isMinifyEnabled = true
@@ -123,5 +124,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.material.icons.extended)
+    implementation("com.google.firebase:firebase-messaging:23.3.1")
     ksp(libs.androidx.room.compiler)
 }
