@@ -1,14 +1,20 @@
 package com.ncautomation.messages.activities
 
 import android.content.Intent
+import android.media.Ringtone
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
+import com.android.mms.logs.LogTag.TAG
 import com.ncautomation.commons.dialogs.RadioGroupDialog
 import com.ncautomation.commons.extensions.*
 import com.ncautomation.commons.helpers.NavigationIcon
 import com.ncautomation.commons.helpers.ensureBackgroundThread
-import com.ncautomation.commons.helpers.isRPlus
+import com.ncautomation.commons.helpers.isOreoPlus
 import com.ncautomation.commons.models.RadioItem
 import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.adapters.ContactsAdapter
@@ -66,12 +72,37 @@ class ConversationDetailsActivity : SimpleActivity() {
         binding.membersHeading.setTextColor(primaryColor)
     }
 
-    private fun setDetails(customNotification: Boolean, groupSendType: Int = SEND_TYPE_DEFAULT){
+    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, resultData)
+        if (requestCode == 5 && resultCode == RESULT_OK){
+            var bundle = resultData?.extras
+            if (bundle != null) {
+                for (key in bundle.keySet()) {
+                    Log.e(TAG, key + " : " + if (bundle[key] != null) bundle[key] else "NULL")
+                }
+            }
+            val uri: Uri? = resultData?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            conversation!!.sound = uri.toString()
+            binding.soundText.text = getSoundName(conversation?.sound?.toUri())
+            setDetails(true, conversation!!.groupSendType, conversation!!.sound, conversation!!.vibrate)
+        }
+    }
+
+    fun getSoundName(uri: Uri?) : String{
+        var default = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        var soundUri = if (uri == null || uri.toString() == "") default else uri
+        if (uri.toString() == "null") return "Silent"
+        var tone = RingtoneManager.getRingtone(this, soundUri)
+        return tone.getTitle(this)
+    }
+    private fun setDetails(customNotification: Boolean, groupSendType: Int = SEND_TYPE_DEFAULT, sound: String? = "", vibrate: Boolean = true){
         ensureBackgroundThread {
-            conversation = setConversationDetails(conversation!!, customNotification, groupSendType)
+            conversation = setConversationDetails(conversation!!, customNotification, groupSendType, sound, vibrate)
             runOnUiThread{
                 binding.notificationsSwitch.isChecked = customNotification
-                binding.customizeNotifications.beVisibleIf(customNotification)
+                binding.customizeNotifications.beVisibleIf(customNotification && isOreoPlus())
+                binding.soundHolder.beVisibleIf(customNotification && !isOreoPlus())
+                binding.notificationsVibrate.beVisibleIf(customNotification && !isOreoPlus())
                 binding.groupSendMethod.text = when (groupSendType) {
                     SEND_TYPE_MMS -> "MMS"
                     SEND_TYPE_SMS -> "SMS"
@@ -106,14 +137,28 @@ class ConversationDetailsActivity : SimpleActivity() {
                 .putExtra(Settings.EXTRA_CHANNEL_ID, channelid)
             startActivity(intent)
         }
-        binding.notificationsSwitch.beVisibleIf(isRPlus())
-        binding.customizeNotifications.beVisibleIf(isRPlus() && conversation!!.customNotification)
+        binding.customizeNotifications.beVisibleIf(isOreoPlus() && conversation!!.customNotification)
+        binding.soundHolder.beVisibleIf(!isOreoPlus() && conversation!!.customNotification)
+        binding.notificationsVibrate.beVisibleIf(!isOreoPlus() && conversation!!.customNotification)
         binding.notificationsSwitch.isChecked = conversation!!.customNotification
         binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
             conversation!!.customNotification = isChecked
             setDetails(isChecked, conversation!!.groupSendType)
             if (!isChecked) NotificationHelper(this@ConversationDetailsActivity).deleteChannel(conversation!!.threadId)
         }
+        binding.soundHolder.setOnClickListener {
+            val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Sound")
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, conversation?.sound?.toUri())
+            this.startActivityForResult(intent, 5)
+        }
+        binding.soundText.text = getSoundName(conversation?.sound?.toUri())
+        binding.notificationsVibrate.setOnCheckedChangeListener { _, isChecked ->
+            conversation!!.vibrate = isChecked
+            setDetails(true, conversation!!.groupSendType, conversation!!.sound, conversation!!.vibrate)
+        }
+
         binding.groupSendMethodHolder.beVisibleIf(conversation!!.isGroupConversation)
         binding.groupSendMethodHolder.setOnClickListener {
             val items = arrayListOf(

@@ -101,10 +101,57 @@
             android:visibility="gone"
             android:text="Notification settings" />
         <RelativeLayout
+            android:id="@+id/sound_holder"
+            style="@style/SettingsHolderTextViewStyle"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingStart="@dimen/activity_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.ncautomation.commons.views.MyTextView
+                android:id="@+id/sound_label"
+                style="@style/SettingsTextLabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/bigger_text_size"
+                android:text="Sound" />
+
+            <com.ncautomation.commons.views.MyTextView
+                android:id="@+id/sound_text"
+                style="@style/SettingsTextValueStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/sound_label"
+                tools:text="Default (Telegraph)" />
+        </RelativeLayout>
+
+
+        <Switch
+            android:id="@+id/notifications_vibrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_margin"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawablePadding="@dimen/bigger_margin"
+            android:ellipsize="end"
+            android:focusable="true"
+            android:maxLines="1"
+            android:paddingStart="@dimen/activity_margin"
+            android:paddingTop="@dimen/bigger_margin"
+            android:paddingEnd="@dimen/activity_margin"
+            android:paddingBottom="@dimen/bigger_margin"
+            android:textSize="@dimen/bigger_text_size"
+            android:checked="true"
+            android:text="Vibrate" />
+
+        <RelativeLayout
             android:id="@+id/group_send_method_holder"
             style="@style/SettingsHolderTextViewStyle"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
+            android:paddingStart="@dimen/activity_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -113,6 +160,7 @@
                 style="@style/SettingsTextLabelStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/bigger_text_size"
                 android:text="Send group messages as" />
 
             <com.ncautomation.commons.views.MyTextView

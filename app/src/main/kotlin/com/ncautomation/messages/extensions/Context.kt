@@ -1113,7 +1113,14 @@ fun Context.insertOrUpdateConversation(
         } else {
             conversation.title
         }
-        conversation.copy(title = title, usesCustomTitle = usesCustomTitle, customNotification = cachedConv.customNotification, groupSendType = cachedConv.groupSendType)
+        conversation.copy(
+            title = title,
+            usesCustomTitle = usesCustomTitle,
+            customNotification = cachedConv.customNotification,
+            groupSendType = cachedConv.groupSendType,
+            sound = cachedConv.sound,
+            vibrate = cachedConv.vibrate
+        )
     } else {
         conversation
     }
@@ -1129,8 +1136,9 @@ fun Context.renameConversation(conversation: Conversation, newTitle: String): Co
     }
     return updatedConv
 }
-fun Context.setConversationDetails(conversation: Conversation, customNotification: Boolean, groupSendType: Int = SEND_TYPE_DEFAULT): Conversation {
-    val updatedConv = conversation.copy(customNotification = customNotification, groupSendType = groupSendType)
+fun Context.setConversationDetails(conversation: Conversation, customNotification: Boolean, groupSendType: Int = SEND_TYPE_DEFAULT,
+                                   sound: String? = null, vibrate: Boolean = true): Conversation {
+    val updatedConv = conversation.copy(customNotification = customNotification, groupSendType = groupSendType, sound = sound, vibrate = vibrate)
     try {
         conversationsDB.insertOrUpdate(updatedConv)
     } catch (e: Exception) {
@@ -1138,6 +1146,7 @@ fun Context.setConversationDetails(conversation: Conversation, customNotificatio
     }
     return updatedConv
 }
+
 fun Context.createTemporaryThread(message: Message, threadId: Long = generateRandomId(), cachedConv: Conversation?) {
     val simpleContactHelper = SimpleContactsHelper(this)
     val addresses = message.participants.getAddresses()
@@ -1149,6 +1158,8 @@ fun Context.createTemporaryThread(message: Message, threadId: Long = generateRan
     }
     val customNotification = cachedConv?.customNotification?:false
     val groupSendType = cachedConv?.groupSendType?: SEND_TYPE_DEFAULT
+    val sound = cachedConv?.sound
+    val vibrate = cachedConv?.vibrate?:true
 
     val conversation = Conversation(
         threadId = threadId,
@@ -1163,7 +1174,9 @@ fun Context.createTemporaryThread(message: Message, threadId: Long = generateRan
         usesCustomTitle = cachedConv?.usesCustomTitle == true,
         isArchived = false,
         customNotification = customNotification,
-        groupSendType = groupSendType
+        groupSendType = groupSendType,
+        sound = sound,
+        vibrate = vibrate
     )
     try {
         conversationsDB.insertOrUpdate(conversation)

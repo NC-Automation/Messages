@@ -14,6 +14,7 @@ import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
+import androidx.core.net.toUri
 import com.ncautomation.commons.extensions.getProperPrimaryColor
 import com.ncautomation.commons.extensions.notificationManager
 import com.ncautomation.commons.helpers.*
@@ -61,10 +62,15 @@ class NotificationHelper(private val context: Context) {
             }
             if (activeThread == conversation?.threadId) channelId = "${NOTIFICATION_CHANNEL}_foreground"
 
-            if (isRPlus() && conversation?.customNotification == true) {
+            if (isOreoPlus() && conversation?.customNotification == true) {
                 channelId = getConversationChannel(conversation!!)
             }
             val notificationId = threadId.hashCode()
+            var soundUri2 = soundUri
+            if (!isOreoPlus() && conversation?.customNotification == true){
+                soundUri2 = conversation!!.sound!!.toUri()
+            }
+
             val contentIntent = Intent(context, ThreadActivity::class.java).apply {
                 putExtra(THREAD_ID, threadId)
             }
@@ -138,7 +144,7 @@ class NotificationHelper(private val context: Context) {
                 setCategory(Notification.CATEGORY_MESSAGE)
                 setAutoCancel(true)
                 setOnlyAlertOnce(alertOnlyOnce)
-                setSound(soundUri, AudioManager.STREAM_NOTIFICATION)
+                setSound(soundUri2, AudioManager.STREAM_NOTIFICATION)
             }
 
             if (replyAction != null && context.config.lockScreenVisibilitySetting == LOCK_SCREEN_SENDER_MESSAGE) {
@@ -153,6 +159,9 @@ class NotificationHelper(private val context: Context) {
                     context.getString(com.ncautomation.commons.R.string.delete),
                     deleteSmsPendingIntent
                 ).setChannelId(channelId)
+            }
+            if (conversation?.customNotification == true && !isOreoPlus() && conversation?.vibrate == false) {
+                builder.setVibrate(null)
             }
             notificationManager.notify(notificationId, builder.build())
         }
@@ -189,7 +198,7 @@ class NotificationHelper(private val context: Context) {
 
     fun getConversationChannel(conversation:Conversation): String {
         createChannels()
-        if (isRPlus()) {
+        if (isOreoPlus()) {
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)

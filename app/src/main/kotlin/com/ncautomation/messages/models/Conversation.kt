@@ -22,6 +22,8 @@ data class Conversation(
     @ColumnInfo(name = "archived") var isArchived: Boolean = false,
     @ColumnInfo(name = "custom_notification") var customNotification: Boolean = false,
     @ColumnInfo(name = "group_send_type") var groupSendType: Int = SEND_TYPE_DEFAULT,
+    @ColumnInfo(name = "sound") var sound: String? = "",
+    @ColumnInfo(name = "vibrate") var vibrate: Boolean = true,
     ) {
 
     companion object {
