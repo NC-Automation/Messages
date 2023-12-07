@@ -7,7 +7,9 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.view.ViewGroup
+import androidx.appcompat.widget.SwitchCompat
 import androidx.loader.content.CursorLoader
+import com.google.android.material.textfield.TextInputEditText
 import com.ncautomation.commons.R
 import com.ncautomation.commons.helpers.*
 import com.ncautomation.commons.models.SharedTheme
@@ -71,6 +73,8 @@ fun Context.updateTextColors(viewGroup: ViewGroup) {
             is MySeekBar -> it.setColors(textColor, accentColor, backgroundColor)
             is MyButton -> it.setColors(textColor, accentColor, backgroundColor)
             is MyTextInputLayout -> it.setColors(textColor, accentColor, backgroundColor)
+            is SwitchCompat -> it.setTextColor(textColor)
+            is TextInputEditText -> it.setTextColor(textColor)
             is ViewGroup -> updateTextColors(it)
         }
     }

@@ -305,7 +305,9 @@ class ThreadAdapter(
                 }
             }
             threadMessageStar.beVisibleIf(stared)
-
+            threadMessageSenderName.setTextColor(textColor)
+            threadMessageTime.setTextColor(textColor)
+            threadMessageMms.setTextColor(textColor)
             if (message.isReceivedMessage()) {
                 setupReceivedMessageView(messageBinding = this, message = message)
             } else {
