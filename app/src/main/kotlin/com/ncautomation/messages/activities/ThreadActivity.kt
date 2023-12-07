@@ -1533,7 +1533,7 @@ class ThreadActivity : SimpleActivity() {
 
         try {
             refreshedSinceSent = false
-            sendMessageCompat(text, addresses, subscriptionId, attachments, messageToResend)
+            sendMessageCompat(text, addresses, subscriptionId, attachments, messageToResend, groupSendType = conversation!!.groupSendType)
             ensureBackgroundThread {
                 val messageIds = messages.map { it.id }
                 val messages = getMessages(threadId, getImageResolutions = true, limit = maxOf(1, attachments.size))

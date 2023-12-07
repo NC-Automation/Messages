@@ -9,10 +9,14 @@ import com.ncautomation.commons.extensions.toast
 import com.ncautomation.messages.R
 import com.ncautomation.messages.extensions.config
 import com.ncautomation.messages.extensions.messagingUtils
+import com.ncautomation.messages.helpers.SEND_TYPE_DEFAULT
+import com.ncautomation.messages.helpers.SEND_TYPE_MMS
+import com.ncautomation.messages.helpers.SEND_TYPE_SMS
 import com.ncautomation.messages.messaging.SmsException.Companion.EMPTY_DESTINATION_ADDRESS
 import com.ncautomation.messages.messaging.SmsException.Companion.ERROR_PERSISTING_MESSAGE
 import com.ncautomation.messages.messaging.SmsException.Companion.ERROR_SENDING_MESSAGE
 import com.ncautomation.messages.models.Attachment
+import kotlinx.coroutines.selects.select
 
 @Deprecated("TODO: Move/rewrite messaging config code into the app.")
 fun Context.getSendMessageSettings(): Settings {
@@ -33,7 +37,7 @@ fun Context.isLongMmsMessage(text: String, settings: Settings = getSendMessageSe
 }
 
 /** Sends the message using the in-app SmsManager API wrappers if it's an SMS or using android-smsmms for MMS. */
-fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?, attachments: List<Attachment>, messageId: Long? = null, subject: String? = null) {
+fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?, attachments: List<Attachment>, messageId: Long? = null, subject: String? = null, groupSendType: Int? = SEND_TYPE_DEFAULT) {
     val settings = getSendMessageSettings()
 
     if (subId != null) {
@@ -43,7 +47,12 @@ fun Context.sendMessageCompat(text: String, addresses: List<String>, subId: Int?
     if (!settings.signature.isNullOrEmpty()) textWithSignature = text + "\n" + settings.signature
 
     val messagingUtils = messagingUtils
-    val isMms = attachments.isNotEmpty() || isLongMmsMessage(textWithSignature, settings) || addresses.size > 1 && settings.group
+    var groupIsMms = when {
+        groupSendType == SEND_TYPE_DEFAULT -> settings.group
+        else -> groupSendType == SEND_TYPE_MMS
+    }
+    settings.group = groupIsMms
+    val isMms = attachments.isNotEmpty() || isLongMmsMessage(textWithSignature, settings) || addresses.size > 1 && groupIsMms
     //we are going to send all messages with an email destination as mms.
     val isEmailDest = addresses.any { it.contains("@") }
     if (isMms || isEmailDest) {

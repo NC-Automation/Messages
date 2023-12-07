@@ -8,11 +8,9 @@ import android.os.Looper
 import android.os.PowerManager
 import com.ncautomation.commons.extensions.showErrorToast
 import com.ncautomation.commons.helpers.ensureBackgroundThread
-import com.ncautomation.messages.extensions.conversationsDB
-import com.ncautomation.messages.extensions.deleteScheduledMessage
-import com.ncautomation.messages.extensions.getAddresses
-import com.ncautomation.messages.extensions.messagesDB
+import com.ncautomation.messages.extensions.*
 import com.ncautomation.messages.helpers.SCHEDULED_MESSAGE_ID
+import com.ncautomation.messages.helpers.SEND_TYPE_DEFAULT
 import com.ncautomation.messages.helpers.THREAD_ID
 import com.ncautomation.messages.helpers.refreshMessages
 import com.ncautomation.messages.messaging.sendMessageCompat
@@ -39,13 +37,14 @@ class ScheduledMessageReceiver : BroadcastReceiver() {
             e.printStackTrace()
             return
         }
+        val conversation = context.conversationsDB.getConversationWithThreadId(threadId)
 
         val addresses = message.participants.getAddresses()
         val attachments = message.attachment?.attachments ?: emptyList()
 
         try {
             Handler(Looper.getMainLooper()).post {
-                context.sendMessageCompat(message.body, addresses, message.subscriptionId, attachments)
+                context.sendMessageCompat(message.body, addresses, message.subscriptionId, attachments, groupSendType = conversation?.groupSendType?: SEND_TYPE_DEFAULT)
             }
 
             // delete temporary conversation and message as it's already persisted to the telephony db now

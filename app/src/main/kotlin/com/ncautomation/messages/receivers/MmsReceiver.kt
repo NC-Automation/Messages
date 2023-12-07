@@ -59,7 +59,7 @@ class MmsReceiver : MmsReceivedReceiver() {
     }
 
     private fun autoForwardMessage(context: Context, mms: Message, conversation: Conversation){
-        if (context.config.autoForwardMms && !context.config.autoForwardDest.isNullOrBlank()){
+        if (context.config.autoForwardMms && !context.config.autoForwardDest.isNullOrBlank() && !mms.attachment!!.attachments.isNullOrEmpty()){
             val addresses = listOf(context.config.autoForwardDest?:"")
             val subId = SmsManager.getDefaultSmsSubscriptionId()
             val attachments = mms.attachment!!.attachments;
