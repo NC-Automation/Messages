@@ -54,8 +54,8 @@ class ScheduleMessageDialog(
     }
 
     private fun updateTexts(dateTime: DateTime) {
-        val dateFormat = activity.config.dateFormat
-        val timeFormat = activity.getTimeFormat()
+        val dateFormat = "M/d/yyyy" //activity.config.dateFormat
+        val timeFormat = "h:mm a" //activity.getTimeFormat()
         binding.editDate.text = dateTime.toString(dateFormat)
         binding.editTime.text = dateTime.toString(timeFormat)
     }
