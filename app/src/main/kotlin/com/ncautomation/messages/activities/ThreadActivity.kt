@@ -688,7 +688,11 @@ class ThreadActivity : SimpleActivity() {
 
             threadSendMessage.setOnLongClickListener {
                 if (!isScheduledMessage) {
-                    launchScheduleSendDialog()
+                    if (participants.getAddresses().size  > 1){
+                        launchSendOptions()
+                    } else {
+                        launchScheduleSendDialog()
+                    }
                 }
                 true
             }
@@ -1472,7 +1476,7 @@ class ThreadActivity : SimpleActivity() {
         updateMessageType()
     }
 
-    private fun sendMessage() {
+    private fun sendMessage(messageType: Int? = null) {
         var text = binding.messageHolder.threadTypeMessage.value
         if (text.isEmpty() && getAttachmentSelections().isEmpty()) {
             showErrorToast(getString(com.ncautomation.commons.R.string.unknown_error_occurred))
@@ -1487,7 +1491,7 @@ class ThreadActivity : SimpleActivity() {
         if (isScheduledMessage) {
             sendScheduledMessage(text, subscriptionId)
         } else {
-            sendNormalMessage(text, subscriptionId)
+            sendNormalMessage(text, subscriptionId, messageType)
         }
     }
 
@@ -1527,13 +1531,13 @@ class ThreadActivity : SimpleActivity() {
         }
     }
 
-    private fun sendNormalMessage(text: String, subscriptionId: Int) {
+    private fun sendNormalMessage(text: String, subscriptionId: Int, messageType: Int? = null) {
         val addresses = participants.getAddresses()
         val attachments = buildMessageAttachments()
-
+        var groupType = messageType ?: conversation?.groupSendType ?: SEND_TYPE_DEFAULT
         try {
             refreshedSinceSent = false
-            sendMessageCompat(text, addresses, subscriptionId, attachments, messageToResend, groupSendType = conversation!!.groupSendType)
+            sendMessageCompat(text, addresses, subscriptionId, attachments, messageToResend, groupSendType = groupType)
             ensureBackgroundThread {
                 val messageIds = messages.map { it.id }
                 val messages = getMessages(threadId, getImageResolutions = true, limit = maxOf(1, attachments.size))
@@ -1780,6 +1784,22 @@ class ThreadActivity : SimpleActivity() {
             deleteScheduledMessage(messageId)
             cancelScheduleSendPendingIntent(messageId)
             refreshMessages()
+        }
+    }
+
+    private fun launchSendOptions(){
+        val items = arrayListOf(
+            RadioItem(0, "Send as SMS"),
+            RadioItem(1, "Send as MMS"),
+            RadioItem(2, "Schedule Message"),
+        )
+
+        RadioGroupDialog(this@ThreadActivity, items) {
+            when {
+                it as Int == 0 -> sendMessage(SEND_TYPE_SMS)
+                it as Int == 1 -> sendMessage(SEND_TYPE_MMS)
+                else -> launchScheduleSendDialog()
+            }
         }
     }
 
