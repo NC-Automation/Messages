@@ -12,12 +12,53 @@
         android:background="@color/color_primary"
         app:title="@string/new_conversation"
         app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
+<com.google.android.material.tabs.TabLayout
+    android:id="@+id/tab_item_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="?attr/actionBarSize">
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Conversations">
+
+    </com.google.android.material.tabs.TabItem>
+    <com.google.android.material.tabs.TabItem
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contacts">
+    </com.google.android.material.tabs.TabItem>
+</com.google.android.material.tabs.TabLayout>
+    <RelativeLayout
+        android:id="@+id/conversations_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="112dp">
+        <com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller
+            android:id="@+id/conversations_fastscroller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.ncautomation.commons.views.MyRecyclerView
+                android:id="@+id/conversations_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:layoutAnimation="@anim/layout_animation"
+                android:overScrollMode="ifContentScrolls"
+                android:scrollbars="none"
+                app:layoutManager="com.ncautomation.commons.views.MyLinearLayoutManager" />
+
+        </com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller>
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/new_conversation_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:visibility="gone"
+        android:layout_marginTop="112dp">
 
         <com.ncautomation.commons.views.MyEditText
             android:id="@+id/new_conversation_address"
@@ -140,4 +181,5 @@
             android:layout_toStartOf="@+id/contacts_letter_fastscroller" />
 
     </RelativeLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>

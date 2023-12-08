@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="AppCompatResource,AlwaysShowAction">
     <item
+        android:id="@+id/cab_forward_message"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_forward_24"
+        android:title="@string/forward_message"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/cab_star"
         android:icon="@drawable/ic_star_vector"
         android:title="Star"
@@ -44,11 +50,6 @@
         android:id="@+id/cab_restore"
         android:showAsAction="never"
         android:title="@string/restore"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/cab_forward_message"
-        android:showAsAction="never"
-        android:title="@string/forward_message"
         app:showAsAction="never" />
     <item
         android:id="@+id/cab_select_text"

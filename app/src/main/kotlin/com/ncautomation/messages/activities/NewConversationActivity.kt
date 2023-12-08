@@ -12,12 +12,17 @@ import com.ncautomation.commons.helpers.*
 import com.ncautomation.commons.models.RadioItem
 import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.R
+import com.ncautomation.messages.adapters.ArchivedConversationsAdapter
 import com.ncautomation.messages.adapters.ContactsAdapter
 import com.ncautomation.messages.databinding.ActivityNewConversationBinding
 import com.ncautomation.messages.databinding.ItemSuggestedContactBinding
+import com.ncautomation.messages.extensions.config
+import com.ncautomation.messages.extensions.conversationsDB
 import com.ncautomation.messages.extensions.getSuggestedContacts
 import com.ncautomation.messages.extensions.getThreadId
 import com.ncautomation.messages.helpers.*
+import com.ncautomation.messages.models.Conversation
+import org.greenrobot.eventbus.EventBus
 import java.net.URLDecoder
 import java.util.Locale
 
@@ -43,7 +48,7 @@ class NewConversationActivity : SimpleActivity() {
         setupMaterialScrollListener(scrollingView = binding.contactsList, toolbar = binding.newConversationToolbar)
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-        binding.newConversationAddress.requestFocus()
+        //binding.newConversationAddress.requestFocus()
 
         // READ_CONTACTS permission is not mandatory, but without it we won't be able to show any suggestions during typing
         handlePermission(PERMISSION_READ_CONTACTS) {
@@ -85,11 +90,6 @@ class NewConversationActivity : SimpleActivity() {
         binding.newConversationConfirm.applyColorFilter(getProperTextColor())
         binding.newConversationConfirm.setOnClickListener {
             val number = binding.newConversationAddress.value
-//            if (isShortCodeWithLetters(number)) {
-//                binding.newConversationAddress.setText("")
-//                toast(R.string.invalid_short_code, length = Toast.LENGTH_LONG)
-//                return@setOnClickListener
-//            }
             launchThreadActivity(number, number)
         }
 
@@ -107,6 +107,74 @@ class NewConversationActivity : SimpleActivity() {
         binding.contactsLetterFastscrollerThumb.setupWithFastScroller(binding.contactsLetterFastscroller)
         binding.contactsLetterFastscrollerThumb.textColor = properPrimaryColor.getContrastColor()
         binding.contactsLetterFastscrollerThumb.thumbColor = properPrimaryColor.getColorStateList()
+        binding.newConversationToolbar.title = "Select Conversation"
+        binding.tabItemHolder.onTabSelectionChanged {
+            var isContacts =  it.text == "Contacts"
+            binding.newConversationHolder.beVisibleIf(isContacts)
+            binding.conversationsHolder.beGoneIf(isContacts)
+            binding.newConversationToolbar.title = if (isContacts) "Select Contact" else "Select Conversation"
+        }
+        binding.conversationsFastscroller.updateColors(getProperPrimaryColor())
+        if (intent.extras?.containsKey("IS_NEW_CONVERSATION") == true) {
+            binding.tabItemHolder.selectTab(binding.tabItemHolder.getTabAt(1))
+            binding.newConversationAddress.requestFocus()
+        }
+        loadConversations()
+    }
+
+    private fun loadConversations() {
+        ensureBackgroundThread {
+            val conversations = try {
+                conversationsDB.getAll().toMutableList() as ArrayList<Conversation>
+            } catch (e: Exception) {
+                ArrayList()
+            }
+
+            runOnUiThread {
+                setupConversations(conversations)
+            }
+        }
+    }
+
+    private fun setupConversations(conversations: ArrayList<Conversation>) {
+        val sortedConversations = conversations.sortedWith(
+            compareByDescending<Conversation> { config.pinnedConversations.contains(it.threadId.toString()) }
+                .thenByDescending { it.date }
+        ).toMutableList() as ArrayList<Conversation>
+
+        //showOrHidePlaceholder(conversations.isEmpty())
+        //updateOptionsMenu(conversations)
+
+        try {
+            getOrCreateConversationsAdapter().apply {
+                updateConversations(sortedConversations)
+            }
+        } catch (ignored: Exception) {
+        }
+    }
+
+    private fun getOrCreateConversationsAdapter(): ArchivedConversationsAdapter {
+        var currAdapter = binding.conversationsList.adapter
+        if (currAdapter == null) {
+            hideKeyboard()
+            currAdapter = ArchivedConversationsAdapter(
+                activity = this,
+                recyclerView = binding.conversationsList,
+                onRefresh = { null },
+                itemClick = { handleConversationClick(it) }
+            )
+
+            binding.conversationsList.adapter = currAdapter
+            if (areSystemAnimationsEnabled) {
+                binding.conversationsList.scheduleLayoutAnimation()
+            }
+        }
+        return currAdapter as ArchivedConversationsAdapter
+    }
+
+    private fun handleConversationClick(any: Any) {
+        var conversation = any as Conversation
+        launchThreadActivity(conversation!!.threadId, "")
     }
 
     private fun isThirdPartyIntent(): Boolean {
@@ -255,6 +323,25 @@ class NewConversationActivity : SimpleActivity() {
                 putExtra(THREAD_ATTACHMENT_URIS, uris)
             }
 
+            startActivity(this)
+        }
+    }
+
+    private fun launchThreadActivity(threadId: Long, name: String) {
+        hideKeyboard()
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: intent.getStringExtra("sms_body") ?: ""
+        Intent(this, ThreadActivity::class.java).apply {
+            putExtra(THREAD_ID, threadId)
+            putExtra(THREAD_TITLE, name)
+            putExtra(THREAD_TEXT, text)
+            if (intent.extras?.containsKey(Intent.EXTRA_REFERRER) == true) putExtra(Intent.EXTRA_REFERRER, intent.getStringExtra(Intent.EXTRA_REFERRER))
+            if (intent.action == Intent.ACTION_SEND && intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
+                val uri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+                putExtra(THREAD_ATTACHMENT_URI, uri?.toString())
+            } else if (intent.action == Intent.ACTION_SEND_MULTIPLE && intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
+                val uris = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
+                putExtra(THREAD_ATTACHMENT_URIS, uris)
+            }
             startActivity(this)
         }
     }

@@ -476,6 +476,7 @@ class MainActivity : SimpleActivity() {
     private fun launchNewConversation() {
         hideKeyboard()
         Intent(this, NewConversationActivity::class.java).apply {
+            putExtra("IS_NEW_CONVERSATION", true)
             startActivity(this)
         }
     }
