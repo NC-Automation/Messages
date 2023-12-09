@@ -1218,6 +1218,14 @@ class ThreadActivity : SimpleActivity() {
     }
 
     public fun showConversationDetails() {
+        if (conversation == null){
+            var conv = getConversations(threadId)?.firstOrNull() ?: return
+            conversation = conv.copy()
+            ensureBackgroundThread {
+                insertOrUpdateConversation(conv)
+            }
+        }
+
         Intent(this, ConversationDetailsActivity::class.java).apply {
             putExtra(THREAD_ID, threadId)
             startActivityForResult(this, MANAGE_PEOPLE_INTENT)
@@ -1544,6 +1552,13 @@ class ThreadActivity : SimpleActivity() {
                     .filter { it.id !in messageIds }
                 for (message in messages) {
                     insertOrUpdateMessage(message)
+                }
+                if (conversation == null && messageType != null){
+                    var conv = getConversations(threadId)?.firstOrNull()
+                    if (conv != null){
+                        conv.groupSendType = messageType
+                        conversationsDB.insertOrUpdate(conv)
+                    }
                 }
             }
             clearCurrentMessage()
