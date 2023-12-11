@@ -1217,7 +1217,7 @@ class ThreadActivity : SimpleActivity() {
         }
     }
 
-    public fun showConversationDetails() {
+    fun showConversationDetails() {
         if (conversation == null){
             var conv = getConversations(threadId)?.firstOrNull() ?: return
             conversation = conv.copy()
