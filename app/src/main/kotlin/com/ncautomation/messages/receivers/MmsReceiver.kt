@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.provider.Telephony
 import android.telephony.SmsManager
 import android.webkit.MimeTypeMap
 import com.bumptech.glide.Glide
@@ -11,7 +12,10 @@ import com.klinker.android.send_message.MmsReceivedReceiver
 import com.ncautomation.commons.extensions.isNumberBlocked
 import com.ncautomation.commons.extensions.normalizePhoneNumber
 import com.ncautomation.commons.extensions.showErrorToast
+import com.ncautomation.commons.helpers.SimpleContactsHelper
 import com.ncautomation.commons.helpers.ensureBackgroundThread
+import com.ncautomation.commons.models.PhoneNumber
+import com.ncautomation.commons.models.SimpleContact
 import com.ncautomation.messages.R
 import com.ncautomation.messages.extensions.*
 import com.ncautomation.messages.helpers.refreshMessages
@@ -45,16 +49,42 @@ class MmsReceiver : MmsReceivedReceiver() {
                 null
             }
 
-            Handler(Looper.getMainLooper()).post {
-                context.showReceivedMessageNotification(mms.id, address, mms.body, mms.threadId, glideBitmap)
-                val conversation = context.getConversations(mms.threadId).firstOrNull() ?: return@post
-                ensureBackgroundThread {
-                    context.insertOrUpdateConversation(conversation)
-                    context.updateUnreadCountBadge(context.conversationsDB.getUnreadConversations())
-                    refreshMessages()
-                    autoForwardMessage(context, mms, conversation)
-                }
+            val conversation = context.getConversations(mms.threadId).firstOrNull() ?: return@ensureBackgroundThread
+            try {
+                context.insertOrUpdateConversation(conversation)
+            } catch (ignored: Exception) {
             }
+
+            try {
+                context.updateUnreadCountBadge(context.conversationsDB.getUnreadConversations())
+            } catch (ignored: Exception) {
+            }
+
+            val photoUri = SimpleContactsHelper(context).getPhotoUriFromPhoneNumber(address)
+            val message =
+                Message(
+                    mms.id,
+                    mms.body,
+                    mms.type,
+                    mms.status,
+                    mms.participants,
+                    mms.date,
+                    false,
+                    mms.threadId,
+                    true,
+                    mms.attachment,
+                    address,
+                    mms.senderName,
+                    photoUri,
+                    mms.subscriptionId
+                )
+            context.messagesDB.insertOrUpdate(message)
+            if (context.config.isArchiveAvailable) {
+                context.updateConversationArchivedStatus(mms.threadId, false)
+            }
+            refreshMessages()
+            context.showReceivedMessageNotification(mms.id, address, mms.body, mms.threadId, glideBitmap)
+            autoForwardMessage(context, mms, conversation)
         }
     }
 
@@ -72,7 +102,7 @@ class MmsReceiver : MmsReceivedReceiver() {
                     it.filename = filename
                 }
             }
-            context.sendMessageCompat(mms.body, addresses, subId, attachments, null,"Auto Forwarded Text")
+            context.sendMessageCompat(mms.body, addresses, subId, attachments, null,"Auto Forwarded Text From" + mms.senderPhoneNumber)
         }
     }
 

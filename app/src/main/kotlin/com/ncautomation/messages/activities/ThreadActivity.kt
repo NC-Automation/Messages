@@ -1737,6 +1737,7 @@ class ThreadActivity : SimpleActivity() {
         setupAdapter()
         runOnUiThread {
             setupSIMSelector()
+            scrollToBottom()
         }
     }
 
