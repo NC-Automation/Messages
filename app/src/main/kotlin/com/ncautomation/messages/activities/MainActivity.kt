@@ -335,8 +335,12 @@ class MainActivity : SimpleActivity() {
             conversations.forEach { clonedConversation ->
                 val threadIds = cachedConversations.map { it.threadId }
                 if (!threadIds.contains(clonedConversation.threadId)) {
-                    conversationsDB.insertOrUpdate(clonedConversation)
-                    cachedConversations.add(clonedConversation)
+                    //double check to make sure the conversation doesn't already exist.
+                    var conv = conversationsDB.getConversationWithThreadId(clonedConversation.threadId)
+                    if (conv == null) {
+                        conversationsDB.insertOrUpdate(clonedConversation)
+                        cachedConversations.add(clonedConversation)
+                    }
                 }
             }
 

@@ -216,7 +216,7 @@ class ThreadActivity : SimpleActivity() {
             deleteSmsDraft(threadId)
         }
 
-        bus?.post(Events.RefreshMessages())
+        //bus?.post(Events.RefreshMessages())
         isActivityVisible = false
     }
 

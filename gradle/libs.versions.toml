@@ -54,7 +54,7 @@ composeMaterial3 = "1.2.0-alpha09"
 #versioning
 app-version-appId = "com.ncautomation.messages"
 app-version-versionCode = "86"
-app-version-versionName = "6.0.7"
+app-version-versionName = "6.0.8"
 #versioning
 app-version-groupId = "com.ncautomation.commons"
 [libraries]
