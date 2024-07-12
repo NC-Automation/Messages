@@ -49,7 +49,7 @@ class NotificationHelper(private val context: Context) {
         sender: String?,
         alertOnlyOnce: Boolean = false
     ) {
-
+        val bitmap = null
         ensureBackgroundThread {
             var conversation: Conversation? = context.conversationsDB.getConversationWithThreadId(threadId)
             var app = (context.applicationContext as com.ncautomation.messages.App)

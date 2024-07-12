@@ -52,7 +52,7 @@ class AttachmentsAdapter(
         val binding = when (viewType) {
             ATTACHMENT_DOCUMENT -> ItemAttachmentDocumentPreviewBinding.inflate(inflater, parent, false)
             ATTACHMENT_VCARD -> ItemAttachmentVcardPreviewBinding.inflate(inflater, parent, false)
-            ATTACHMENT_MEDIA -> ItemAttachmentMediaPreviewBinding.inflate(inflater, parent, false)
+            ATTACHMENT_MEDIA -> ItemAttachmentDocumentPreviewBinding.inflate(inflater, parent, false)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
 
@@ -85,10 +85,19 @@ class AttachmentsAdapter(
                         onRemoveButtonClicked = { removeAttachment(attachment) }
                     )
                 }
-                ATTACHMENT_MEDIA -> setupMediaPreview(
-                    binding = binding as ItemAttachmentMediaPreviewBinding,
-                    attachment = attachment
-                )
+                //ATTACHMENT_MEDIA -> setupMediaPreview(
+                //    binding = binding as ItemAttachmentMediaPreviewBinding,
+                //    attachment = attachment
+                //)
+                ATTACHMENT_MEDIA -> {
+                    (binding as ItemAttachmentDocumentPreviewBinding).setupDocumentPreview(
+                        uri = attachment.uri,
+                        title = attachment.filename,
+                        mimeType = attachment.mimetype,
+                        onClick = { activity.launchViewIntent(attachment.uri, attachment.mimetype, attachment.filename) },
+                        onRemoveButtonClicked = { removeAttachment(attachment) }
+                    )
+                }
             }
         }
     }
