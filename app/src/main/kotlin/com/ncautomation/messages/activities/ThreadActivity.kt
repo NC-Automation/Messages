@@ -78,6 +78,8 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.Calendar
 import java.util.Locale
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 class ThreadActivity : SimpleActivity() {
     private val MIN_DATE_TIME_DIFF_SECS = 300
@@ -514,6 +516,14 @@ class ThreadActivity : SimpleActivity() {
 
     private fun scrollToBottom() {
         val position = getOrCreateThreadAdapter().currentList.lastIndex
+        if (messages.count() > position){
+            //the list is not done loading, Keeping trying until we can scroll to bottom.
+            Timer().schedule(500){
+                scrollToBottom()
+            }
+            return
+        }
+
         if (position >= 0) {
             binding.threadMessagesList.smoothScrollToPosition(position)
         }
