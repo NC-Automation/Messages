@@ -774,7 +774,7 @@ class ThreadActivity : SimpleActivity() {
                 }
                 window.decorView.requestApplyInsets()
             }
-            val limitAttachments = !(intent.extras?.containsKey(Intent.EXTRA_REFERRER) == true && intent.getStringExtra(Intent.EXTRA_REFERRER) == "MessageForward")
+            val limitAttachments = false
 
             if (intent.extras?.containsKey(THREAD_ATTACHMENT_URI) == true) {
                 val uri = Uri.parse(intent.getStringExtra(THREAD_ATTACHMENT_URI))
