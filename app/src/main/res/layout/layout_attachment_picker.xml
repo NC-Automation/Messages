@@ -17,7 +17,6 @@
 
     <LinearLayout
         android:id="@+id/choose_photo"
-        android:visibility="gone"
         android:layout_width="@dimen/attachment_button_width"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackgroundBorderless"
@@ -83,7 +82,6 @@
 
     <LinearLayout
         android:id="@+id/take_photo"
-        android:visibility="gone"
         android:layout_width="@dimen/attachment_button_width"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackgroundBorderless"
