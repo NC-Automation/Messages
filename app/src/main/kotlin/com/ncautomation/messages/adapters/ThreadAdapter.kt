@@ -3,6 +3,7 @@ package com.ncautomation.messages.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
@@ -494,16 +495,17 @@ class ThreadAdapter(
             .transform(transformation)
 
         var builder = Glide.with(root.context)
+            .asBitmap()
             .load(uri)
             .apply(options)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+            .listener(object : RequestListener<Bitmap> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>, isFirstResource: Boolean): Boolean {
                     threadMessagePlayOutline.beGone()
                     threadMessageAttachmentsHolder.removeView(imageView.root)
                     return false
                 }
 
-                override fun onResourceReady(dr: Drawable, a: Any, t: Target<Drawable>, d: DataSource, i: Boolean) = false
+                override fun onResourceReady(resource: Bitmap, a: Any, target: Target<Bitmap>, d: DataSource, i: Boolean): Boolean = false
             })
 
         // limit attachment sizes to avoid causing OOM
